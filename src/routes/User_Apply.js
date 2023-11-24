@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_Apply from '../componentes/Modal_Apply';
+import Modal_SearchStuff from '../componentes/Modal_SearchStuff';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
@@ -26,7 +26,9 @@ function Apply() {
         setIsOpen(true);
     }
 
-    const onSubmit_item = async () => {
+    //모달창에서 아이템 선택완료시 아이템 정보를 다시 요청하는 함수
+    const onSubmit_item = async () => { 
+
 
         const SEARCHURL = `http://27.96.131.106:8080/item/${itemId}`;
 
@@ -91,11 +93,11 @@ function Apply() {
                     </SearchBar>
                 </FlexBox_Row>
                 <Line></Line>
-                {isOpen && <Modal_Apply
+                {isOpen && <Modal_SearchStuff
                     setIsOpen={setIsOpen}
                     setItemId={setItemId}
                     setIsSelected={setIsSelected}
-                ></Modal_Apply>}
+                ></Modal_SearchStuff>}
                 {isSelected ? <StuffInfo>
                     <h1>
                         •품명 : <span>{itemInfo.itemName}</span>

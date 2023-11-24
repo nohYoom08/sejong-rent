@@ -2,20 +2,45 @@ import React, { useState, useRef } from "react";
 
 import styled from 'styled-components'
 
+import axios from 'axios';
 
-function ImageUpload({ setImageName, setImageUrlUpload }) {
+function ImageRevise({ setImageName, setImageUrlUpload }) {
     const [imageUrl, setImageUrl] = useState("");
     const [imgUp, setImgUp] = useState(false);
 
-    const handleChange = (event) => {
+    const handleChange = async (event) => {
         const image_file = event.target.files[0];
+
+        let formData = new FormData();
+        formData.append("image", image_file);
+
         if (image_file) {
             setImageName(image_file.name);
             setImageUrl(URL.createObjectURL(image_file));
-            setImageUrlUpload(URL.createObjectURL(image_file));
-            setImgUp(true);
-            console.log(image_file);
-            console.log("URL:", imageUrl);
+
+            const IMGURL = 'http://27.96.131.106:8080/bill/image'
+            console.log('IMGURL', IMGURL);
+            try {
+                const response = await axios.post(IMGURL,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+                if (response.data) {
+                    console.log('image success!', response.data)
+                    setImageUrlUpload(response.data.url);
+                    setImgUp(true);
+                    console.log(image_file);
+                    console.log("URL:", imageUrl);
+                } else {
+                    console.log('image failed');
+                }
+            } catch (error) {
+                console.log('image error', error);
+            }
         }
     };
 
@@ -23,40 +48,21 @@ function ImageUpload({ setImageName, setImageUrlUpload }) {
 
     return (
         <FlexBox_Column>
-
-            <ImageBoard>
-                {imgUp
-                    ? <PrintImage src={imageUrl}></PrintImage>
-                    : <p>Image</p>}
-            </ImageBoard>
-
-            {!imgUp ?
-                <label htmlFor="select">
-                    <AddImage>이미지 변경</AddImage>
-                    <input
-                        id="select"
-                        type="file"
-                        onChange={handleChange}
-                        accept="image/*"
-                        style={{ display: "none" }}>
-                    </input>
-                </label>
-                : <label htmlFor="revise">
-                    <AddImage>수정하기</AddImage>
-                    <input
-                        id="revise"
-                        type="file"
-                        onChange={handleChange}
-                        accept="image/*"
-                        style={{ display: "none" }}>
-                    </input>
-                </label>
-            }
+            <label htmlFor="select">
+                <AddImage>이미지 변경</AddImage>
+                <input
+                    id="select"
+                    type="file"
+                    onChange={handleChange}
+                    accept="image/*"
+                    style={{ display: "none" }}>
+                </input>
+            </label>
         </FlexBox_Column>
     );
 };
 
-export default ImageUpload;
+export default ImageRevise;
 
 
 

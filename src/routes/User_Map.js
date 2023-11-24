@@ -14,6 +14,47 @@ import campus from '../images/sejong_campus.jpg';
 import building from '../images/student_building.jpg';
 
 
+function User_Map() {
+
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/' style={{textDecoration:'none'}}>
+        <Banner>
+            <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+            <FlexBox_Row>
+                <Forever></Forever>
+                <Rent>세종대여</Rent>
+            </FlexBox_Row>
+        </Banner>
+        </Link>
+            <MainBox>
+                <SecondBox>
+                    <Link to='/' style={{ textDecoration: 'none' }}>
+                        <BackPage>
+                            <Icon src={backpage}></Icon>
+                            이전 페이지
+                        </BackPage>
+                    </Link>
+                    <Text style={{ marginBottom: '8px' }}>
+                        <Icon src={home}></Icon>
+                        대여 장소 : 영원 학생회실 (학생회관 409호)
+                    </Text>
+                    <Text>
+                        <Icon src={point}></Icon>
+                        학생회관 위치 : 세종대학교 정문 옆, 27번 건물
+                    </Text>
+                    <IMG src={campus}></IMG>
+                    <Text>
+                        <Icon src={image}></Icon>
+                        학생회관 건물 외관
+                    </Text>
+                    <IMG src={building}></IMG>
+                </SecondBox>
+            </MainBox>
+    </Wrapper>
+}
+export default User_Map;
+
 const FlexBox_Row = styled.div`
 display:flex;
 justify-content:center;
@@ -202,45 +243,3 @@ align-items:center;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Map() {
-
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/' style={{textDecoration:'none'}}>
-        <Banner>
-            <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-            <FlexBox_Row>
-                <Forever></Forever>
-                <Rent>세종대여</Rent>
-            </FlexBox_Row>
-        </Banner>
-        </Link>
-            <MainBox>
-                <SecondBox>
-                    <Link to='/' style={{ textDecoration: 'none' }}>
-                        <BackPage>
-                            <Icon src={backpage}></Icon>
-                            이전 페이지
-                        </BackPage>
-                    </Link>
-                    <Text style={{ marginBottom: '8px' }}>
-                        <Icon src={home}></Icon>
-                        대여 장소 : 영원 학생회실 (학생회관 409호)
-                    </Text>
-                    <Text>
-                        <Icon src={point}></Icon>
-                        학생회관 위치 : 세종대학교 정문 옆, 27번 건물
-                    </Text>
-                    <IMG src={campus}></IMG>
-                    <Text>
-                        <Icon src={image}></Icon>
-                        학생회관 건물 외관
-                    </Text>
-                    <IMG src={building}></IMG>
-                </SecondBox>
-            </MainBox>
-    </Wrapper>
-}
-export default Map;

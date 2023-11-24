@@ -7,14 +7,14 @@ import close from '../images/🦆 icon _close.svg';
 import axios from 'axios';
 
 
-function Modal_Apply({ setIsOpen, setItemId, setIsSelected }) {
+function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
    
     const STUFFURL = 'http://27.96.131.106:8080/items';
 
     const [stuffList, setStuffList] = useState([]);
     const [totalPages,setTotalPages]=useState(0);
     const [numList, setNumList] = useState([]);
-    const [currentNum, setCurrentNum] = useState(2);
+    const [currentNum, setCurrentNum] = useState(1);
     const [fetched, setFetched] = useState(false);
 
 
@@ -42,8 +42,8 @@ function Modal_Apply({ setIsOpen, setItemId, setIsSelected }) {
 
 
     const fetchData = async () => {
-        const page = currentNum-1;
-        const size = 3;
+        const page = currentNum-1;  //백에선 page가 0부터 시작하므로
+        const size = 10;
         console.log('page,size:',page,size);
         try {
             const response = await axios.get(STUFFURL,
@@ -92,7 +92,7 @@ function Modal_Apply({ setIsOpen, setItemId, setIsSelected }) {
         <Line></Line>
 
         {fetched &&
-            <FlexBox_Row style={{ marginBottom: '4px' }}>
+            <StuffBox style={{ marginBottom: '4px' }}>
                 {stuffList.map((item, key) =>
                     <Stuff
                         onClick={onClick_Stuff}
@@ -103,7 +103,7 @@ function Modal_Apply({ setIsOpen, setItemId, setIsSelected }) {
 
                 )
                 }
-            </FlexBox_Row>
+            </StuffBox>
         }
         <Line></Line>
         <FlexBox_Row style={{ marginBottom: '8px' }}>
@@ -123,12 +123,10 @@ function Modal_Apply({ setIsOpen, setItemId, setIsSelected }) {
         </FlexBox_Row>
     </SearchModal>
 }
-export default Modal_Apply;
+export default Modal_SearchStuff;
 
 
 const FlexBox_Row = styled.div`
-width:280px;
-
 display:flex;
 justify-content:center;
 align-items:center;
@@ -141,9 +139,19 @@ flex-direction:column;
 justify-content:center;
 align-items:center;
 `;
+
+const StuffBox=styled.div`
+width:280px;
+
+display:grid;
+grid-template-columns:1fr 1fr;
+grid-template-rows:repeat(5,40px);
+`;
+
 const SearchModal = styled.div`
 position:absolute;
 width: 300px;
+top:4px;
 
 flex-shrink: 0;
 

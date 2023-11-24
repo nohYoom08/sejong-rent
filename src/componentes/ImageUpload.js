@@ -9,30 +9,41 @@ function ImageUpload({ setImageName, setImageUrlUpload }) {
     const [imageUrl, setImageUrl] = useState("");
     const [imgUp, setImgUp] = useState(false);
 
+
+
     const handleChange = async (event) => {
         const image_file = event.target.files[0];
-        const image = URL.createObjectURL(image_file)
+
+        let formData = new FormData();
+        formData.append("image", image_file);
+
         if (image_file) {
             setImageName(image_file.name);
             setImageUrl(URL.createObjectURL(image_file));
 
             const IMGURL = 'http://27.96.131.106:8080/bill/image'
-            console.log('IMGURL:',image);
-            try{
-            const response = await axios.post(IMGURL, {image});
+            console.log('IMGURL', IMGURL);
+            try {
+                const response = await axios.post(IMGURL,
+                    formData,
+                    {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
 
-            if(response.data){
-                console.log('image success!',response.data)
-            setImageUrlUpload(URL.createObjectURL(image_file));
-            setImgUp(true);
-            console.log(image_file);
-            console.log("URL:", imageUrl);
-            }else{
-                console.log('image failed');
+                if (response.data) {
+                    console.log('image success!', response.data)
+                    setImageUrlUpload(response.data.url);
+                    setImgUp(true);
+                    console.log(image_file);
+                    console.log("URL:", imageUrl);
+                } else {
+                    console.log('image failed');
+                }
+            } catch (error) {
+                console.log('image error', error);
             }
-        }catch(error){
-            console.log('image error',error);
-        }
         }
     };
 

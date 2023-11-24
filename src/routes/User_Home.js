@@ -1,43 +1,18 @@
 import { useState, useEffect } from 'react';
 
-import { ID_AUTH, PASSWORD_AUTH } from '../componentes/ID_PSWD_AUTH';
-
 import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
-import backpage from '../images/🦆 icon _arrow back.svg';
+import book from '../images/🦆 icon _book.svg';
+import glass from '../images/🦆 icon _glass.svg';
+import map from '../images/🦆 icon _map.svg';
+import person from '../images/🦆 icon _person.svg';
 
 
-function Login() {
-
-    const [formValues, setFormValues] = useState({});
-    const onChange = (event) => {
-        event.preventDefault();
-        const {name, value} = event.target;
-        setFormValues((prev) => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-    const onClick_auth = () => {
-        console.log(formValues.id,formValues.password)
-        if (formValues.id === ID_AUTH &&
-            formValues.password === PASSWORD_AUTH){
-
-            const authInfo = {
-                id : ID_AUTH,
-                password : PASSWORD_AUTH,
-            }
-            sessionStorage.setItem('authInfo',JSON.stringify(authInfo));
-            window.location.href = '/auth_home';
-        }
-        else
-            alert("올바른 아이디 또는 비밀번호를 입력해주십시오!");
-    }
-
+function User_Home() {
     return <Wrapper>
         <Sejong></Sejong>
         <Link to='/' style={{ textDecoration: 'none' }}>
@@ -50,37 +25,34 @@ function Login() {
             </Banner>
         </Link>
         <MainBox>
-            <Link to='/' style={{
-                textDecoration: 'none',
-                alignSelf: 'flex-start',
-                marginLeft: '-12px'
-            }}>
-                <BackPage>
-                    <Icon src={backpage}></Icon>
-                    이전 페이지
-                </BackPage>
+            <Link to='/apply' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <Icon src={book}></Icon>
+                    <p>대여 신청</p>
+                </BtnBig>
             </Link>
-            <InputDiv>
-                <p>ID(학번)</p>
-                <input type='number'
-                    name='id'
-                    onChange={onChange}
-                    placeholder='ID (학번)'></input>
-            </InputDiv>
-            <InputDiv>
-                <p>비밀번호</p>
-                <input 
-                type='password'
-                name='password'
-                onChange={onChange}
-                placeholder='비밀번호 입력'></input>
-            </InputDiv>
-            <Btn_login onClick={onClick_auth}>로그인 하기</Btn_login>
+            <Link to='/check' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <Icon src={glass}></Icon>
+                    <p>대여내역 확인 및 수정</p>
+                </BtnBig>
+            </Link>
+            <Link to='/map' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <IconMap src={map}></IconMap>
+                    <p style={{ marginLeft: '-16px' }}>찾아오시는 길</p>
+                </BtnBig>
+            </Link>
+            <Link to='/login' style={{ textDecoration: 'none' }}>
+                <BtnSmall>
+                    <IconSmall src={person}></IconSmall>
+                    <p>학생회 로그인</p>
+                </BtnSmall>
+            </Link>
         </MainBox>
     </Wrapper>
 }
-export default Login;
-
+export default User_Home;
 
 
 const FlexBox_Row = styled.div`
@@ -177,114 +149,124 @@ line-height: 44px; /* 110% */
 //MainBox 시작//
 const MainBox = styled.div`
 width: 280px;
+height: 480px;
 flex-shrink: 0;
 
 border-radius: 40px;
 border: 2px solid rgba(194, 15, 47, 0.71);
 background: rgba(255, 255, 255, 0.50);
 
-padding-top:12px;
-padding-left:24px;
-padding-right:24px;
-padding-bottom:36px;
-
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+gap:48px;
 `;
 
-const Icon = styled.img`
-width: 28px;
-height: 36px;
-flex-shrink: 0;
-`;
-
-const BackPage = styled.div`
-align-self:flex-start;
-width:65px;
-height:16px;
-background-color:rgb(230,230,230);
-border-radius:8px;
-
-margin-top:8px;
-margin-left:8px;
-margin-bottom:16px;
-
-color: black;
-font-size: 10px;
-font-weight: 500;
-
-cursor:pointer;
-
-padding-right:5px;
-padding-top:2px;
-display: flex;
-justify-content: center;
-align-items:center;
-flex-shrink: 0;
-
-${Icon}{
-    width:12px;
-    margin-bottom:2px;
-}
-`;
-
-const InputDiv = styled.div`
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:flex-start;
-margin-bottom:24px;
-
-p{
-    color: #000;
-font-size: 12px;
-font-style: normal;
-font-weight: 500;
-margin:0;
-}
-input{
-    width: 240px;
-height: 40px;
-flex-shrink: 0;
-
-border-radius: 8px;
-border: 2px solid rgba(194, 15, 47, 0.71);
-background: #FFF;
-
-color: #8A8A8A;
-font-size: 16px;
-font-style: normal;
-font-weight: 500;
-line-height: 60px; /* 300% */
-
-padding-left:12px;
-}
-`;
-
-const Btn_login = styled.button`
+const BtnBig = styled.button`
 width: 240px;
-height: 49px;
+height: 64px;
 flex-shrink: 0;
 border-radius: 20px;
-border:0;
-background: #C05A6C;
+background: #FF96A9;
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+border:0;
+color: #FFF;
+
+padding-left:28px;
+padding-right:28px;
+display:flex;
+justify-content:space-evenly;
+align-items:center;
 cursor:pointer;
 
-color: #FFF;
+&:hover{
+    background-color:rgb(256,180,180);
+}
+&:active{
+    box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background-color:rgb(256,180,180);
+}
+
+p{
+margin:0;
+padding:0;
+width: 179px;
+height: 26px;
+
+
 text-align: center;
 font-size: 20px;
 font-style: normal;
 font-weight: 500;
 line-height: 60px; /* 300% */
 
+display: flex;
+flex-direction: column;
+justify-content: center;
+flex-shrink: 0;
+}
+
+
+`;
+
+const BtnSmall = styled.button`
+width: 125px;
+height: 40px;
+flex-shrink: 0;
+border-radius: 20px;
+background: #FF96A9;
+box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+border:0;
+cursor:pointer;
+
+padding-left:16px;
 display:flex;
 justify-content:center;
 align-items:center;
+
+&:hover{
+    background-color:rgb(256,180,180);
+}
+&:active{
+    box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background-color:rgb(256,180,180);
+}
+p{
+    display: flex;
+width: 102.083px;
+height: 13px;
+flex-direction: column;
+justify-content: center;
+flex-shrink: 0;
+
+color: #FFF;
+text-align: center;
+font-size: 12px;
+font-style: normal;
+font-weight: 500;
+line-height: 60px; /* 500% */
+}
+
 `;
 
+
+const Icon = styled.img`
+width: 28px;
+height: 36px;
+flex-shrink: 0;
+`;
+const IconMap = styled.img`
+width: 48px;
+height: 36px;
+flex-shrink: 0;
+`;
+const IconSmall = styled.img`
+width: 24px;
+height: 24px;
+flex-shrink: 0;
+margin-right:-12px;
+`;
 
 
 

@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_Apply from '../componentes/Modal_Apply';
+import Modal_Apply from '../componentes/Modal_SearchStuff';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
@@ -12,19 +12,18 @@ import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
 import charger_lenova from '../images/Lenova.jpg';
 
-import axios from 'react';
+import axios from 'axios';
 
-function Check() {
+function User_Check() {
     const SEARCHURL = 'http://27.96.131.106:8080/rentals';
-    const DELETEURL = '/';
-    const REVISEURL = '/';
+
 
     const [stuffCnt,setStuffCnt]=useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [isSearched,setIsSearched]=useState(false);
     const [dataList,setDataList]=useState([]);
     const [formValues,setFormValues]= useState({
-        id:"",
+        studentNo:"",
         password:"",
     })
 
@@ -40,41 +39,62 @@ function Check() {
     const onClick_searched = async() =>{
         setIsSearched(true);
 
-        const id = formValues.id;
+        const studentNo = formValues.studentNo;
         const password=formValues.password;
         try{
-            console.log('id,password : ',id,password);
-            const response = await axios.post(SEARCHURL,
-            {id,password});
+            console.log('will be axios-studentNo,password : ',studentNo,password);
+            const response = await axios.get(SEARCHURL,
+            {params:{studentNo,password}});
+            console.log('response',response);
             if(response.data){
                 console.log('searchData succeed!',response.data);
                 setDataList(response.data);
+            }else{
+                console.log('searching fail');
             }
         }catch(error){
-            console.log('seraching failed ;(',error);
+            console.log('seraching error ;(',error);
         }
     }
-    const onClick_cancle = async()=>{
+
+    const onClick_cancle = async(event)=>{
+        event.preventDefault();
+        const rentalId = event.target.value;
+        const DELETEURL = `http://27.96.131.106:8080/rental/${rentalId}`;
+
         try{
             const response = await axios.delete(DELETEURL);
+
+            console.log('response:',response);
             if(response.data){
                 console.log('delete success!',response.data);
                 onClick_searched();
+            }else{
+                console.log('delete fail')
             }
         }catch(error){
-            console.log('delete failed ;(',error);
+            console.log('delete error',error);
         }
     }
+
     const onClick_revise = async(event)=>{  //뺄지 말지 고민
-        const id = event.target.value;
+        event.preventDefault();
+        const rentalId = event.target.value;
+        const REVISEURL = `http://27.96.131.106:8080/rental/${rentalId}`;
+
         const result1 = window.prompt("원하는 대여 수량을 작성해주십시오");
         if(result1){
             const result2 = window.confirm("대여 수량을 변경하시겠습니까?");
             if(result2){
+                const name = formValues.name;
+                const password=formValues.password;
+                const studentNo=formValues.studentNo;
                 const cnt = result1;
                 try{
-                    console.log('id,cnt : ',id,cnt);
-                    const response = await axios.put(REVISEURL,{id,cnt});
+                    console.log('will be axios - name,password,studentNo,cnt:',
+                    name,password,studentNo,cnt);
+                    const response = await axios.put(REVISEURL,
+                        {name,password,studentNo,cnt});
                     if(response.data){
                         console.log('revise success!',response.data);
                         alert("대여수량을 성공적으로 수정하였습니다!");
@@ -87,6 +107,9 @@ function Check() {
     }
 
     useEffect(()=>{setIsSearched(true)},[dataList]);
+    useEffect(()=>{
+        console.log('formValues check',formValues)},[formValues])
+
     return <Wrapper>
         <Sejong></Sejong>
         <Link to='/' style={{ textDecoration: 'none' }}>
@@ -115,7 +138,7 @@ function Check() {
                         <input 
                         onChange={onChange}
                         placeholder='학번 입력'
-                        name='id'/>
+                        name='studentNo'/>
                     </SearchBar>
                     <SearchBar>
                         <img src={search}></img>
@@ -127,7 +150,9 @@ function Check() {
                     </SearchBar>
                     <SearchBtn onClick={onClick_searched}>검색</SearchBtn>
                 </FlexBox_Row>
+
                 <Line></Line>
+
                 {isOpen && <Modal_Apply isOpen={isOpen} setIsOpen={setIsOpen}></Modal_Apply>}
                 {isSearched ? <TableBox>
                     <Table>
@@ -189,7 +214,7 @@ function Check() {
         </MainBox>
     </Wrapper>
 }
-export default Check;
+export default User_Check;
 
 
 

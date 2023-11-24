@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_Apply from '../componentes/Modal_Apply';
+import Modal_Apply from '../componentes/Modal_SearchStuff';
 import Signed_In from '../componentes/Signed_In';
 
 import sejong from '../images/sejong.png';
@@ -12,7 +12,7 @@ import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
 
-import axios from "react";
+import axios from "axios";
 
 
 
@@ -26,26 +26,111 @@ function Apply() {
         }
     }, []);
 
-    const FETCHURL = 'http://27.96.131.106:8080/';
+    const FETCHURL = 'http://27.96.131.106:8080/admin/rentals';
     const SEARCHURL = 'http://27.96.131.106:8080/';
 
-    const [dataList, setDataList] = useState({});
-    const [stuffCnt, setStuffCnt] = useState(0);
+    const stuffCnt = 1;
+    const [dataList, setDataList] = useState([]);
+    const [fetched, setFetched] = useState(false);
+
     const fetchDataList = async () => {
         try {
             const response = await axios.get(FETCHURL);
             if (response.data) {
                 console.log('fetch success!', response.data);
                 setDataList(response.data);
+                setFetched(true);
             } else {
-                console.log('fetch failed / not errored');
+                console.log('fetch failed');
             }
         } catch (error) {
-            console.log('fetch failed / error:', error);
+            console.log('fetch error:', error);
         }
     }
 
+    const onClick_accept = async (event) => {
+        event.preventDefault();
+        const rentalId = event.target.value;
 
+        const result = window.confirm(
+            `대여신청 ID #${rentalId}의 신청내역을 수락하시겠습니까?`);
+
+        if (result) {
+            console.log('rentalId will be axiosed', rentalId);
+            try {
+                const ACCEPTURL =
+                    `http://27.96.131.106:8080/admin/rental/${rentalId}`
+                const response = await axios.post(ACCEPTURL);
+
+                console.log('response:', response);
+                if (response.data === "대여 완료") {
+                    console.log('accept success :', response.data);
+                    alert(`#${rentalId}의 대여신청을 성공적으로 수락하였습니다.`);
+                    fetchDataList();
+                } else {
+                    console.log('accept fail');
+                }
+            } catch (error) {
+                console.log('accept error', error)
+            }
+        }
+    }
+
+    const onClick_returned = async (event) => {
+        event.preventDefault();
+        const rentalId = event.target.value;
+
+        const result = window.confirm(
+            `대여신청 ID #${rentalId}의 대여내역을 '반납 완료' 처리하시겠습니까?`);
+
+        if (result) {
+            console.log('rentalId will be axiosed', rentalId);
+            try {
+                const RETURNEDURL =
+                    `http://27.96.131.106:8080/admin/rental?rentalId=${rentalId}`
+                const response = await axios.patch(RETURNEDURL);
+
+                console.log('response:', response);
+                if (response.data === "반납 완료") {
+                    console.log('returned success :', response.data);
+                    alert(`#${rentalId}의 반납처리를 성공적으로 수락하였습니다.`);
+                    fetchDataList();
+                } else {
+                    console.log('returned fail');
+                }
+            } catch (error) {
+                console.log('returned error', error)
+            }
+        }
+    }
+
+    const onClick_delete = async (event) => {
+        event.preventDefault();
+        const rentalId = event.target.value;
+
+        const result = window.confirm(
+            `대여신청 ID #${rentalId}의 신청내역을 삭제하시겠습니까?`);
+
+        if (result) {
+            console.log('rentalId will be axiosed', rentalId);
+            try {
+                const DELETEURL =
+                    `http://27.96.131.106:8080/admin/rental/${rentalId}`
+                const response = await axios.delete(DELETEURL);
+
+                console.log('response:', response);
+                if (response.data === "삭제 완료") {
+                    console.log('delete success :', response.data);
+                    alert(`#${rentalId}의 대여신청내역을 성공적으로 삭제하였습니다.`);
+                    fetchDataList();
+                } else {
+                    console.log('delte fail');
+                }
+            } catch (error) {
+                console.log('delete error', error)
+            }
+        }
+    }
     const onClick_search = async (event) => {
         event.preventDefault();
 
@@ -92,19 +177,58 @@ function Apply() {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>반납완료</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        반납완료
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
+                            {fetched && dataList.map((item, key) => (
+                                <tr key={key}>
+                                    <td>{item.studentNo}<br></br>
+                                        {item.name}</td>
+                                    <td>#{item.rentalId.toString().padStart(3, '0')}</td>
+                                    <td>{item.date.slice(0, 10)}/
+                                        {item.date.slice(11, 19)}</td>
+                                    <td>{item.name}</td>
+                                    <td>{item.cnt}</td>
+                                    <td>
+                                        {
+                                            (item.status === "WAIT") &&
+                                            <p>신청 대기</p>
+                                        }
+                                        {
+                                            (item.status === "RENTAL") &&
+                                            <p>대여중</p>
+                                        }
+                                        {
+                                            (item.status === "RETURN") &&
+                                            <p>반납 완료</p>
+                                        }
+                                    </td>
+                                    <td>
+                                        {
+                                            (item.status === "WAIT") &&
+                                            <Btn_Rent
+                                                onClick={onClick_accept}
+                                                value={item.rentalId}
+                                                bgColor='#D7556C'>
+                                                신청확인
+                                            </Btn_Rent>
+                                        }
+                                        {(item.status === "RENTAL") &&
+                                            <Btn_Rent 
+                                                onClick={onClick_returned}
+                                                value={item.rentalId}
+                                                bgColor='#333394'>
+                                                반납확인
+                                            </Btn_Rent>
+                                        }
+                                        {(item.status === "RETURN") &&
+                                            <Btn_Rent bgColor='#A6A6A6'
+                                                onClick={onClick_delete}
+                                                value={item.rentalId}>
+                                                삭제하기
+                                            </Btn_Rent>
+                                        }
+
+                                    </td>
+                                </tr>
+                            ))}
                             <tr>
                                 <td>20011001/<br></br>김세종</td>
                                 <td>#201-01</td>
@@ -118,123 +242,7 @@ function Apply() {
                                     </Btn_Rent>
                                 </td>
                             </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
+
                             <tr>
                                 <td>20011001/<br></br>김세종</td>
                                 <td>#201-01</td>
@@ -258,19 +266,6 @@ function Apply() {
                                 <td>
                                     <Btn_Rent bgColor='#D7556C'>
                                         신청확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
                                     </Btn_Rent>
                                 </td>
                             </tr>
@@ -557,10 +552,10 @@ thead{
         width:80px;
     }
     th:nth-child(2){
-        width:100px;
+        width:10px;
     }
     th:nth-child(3){
-        width:40px;
+        width:100px;
     }
     th:nth-child(4){
         width:100px;

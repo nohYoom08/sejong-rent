@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_Search_Auth from '../componentes/Modal_Search_Auth';
+import Modal_SearchStuff from '../componentes/Modal_SearchStuff';
 import Modal_Add_Auth from '../componentes/Modal_Add_Auth';
 import Signed_In from '../componentes/Signed_In';
 import ImageRevise from '../componentes/ImageRevise';
@@ -14,6 +14,8 @@ import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
 import charger_lenova from '../images/Lenova.jpg';
+
+import axios from 'axios';
 
 
 
@@ -27,34 +29,142 @@ function Auth_Stuff() {
     }, []);
 
 
-    const [isOpenSearch, setIsOpenSearch] = useState(false);
-    const [itemManage, setItemManage] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [itemId, setItemId] = useState("");
     const [isSelected, setIsSelected] = useState(false);
     const [isOpenAdd, setIsOpenAdd] = useState(false);
+
+    const [itemInfo,setItemInfo] = useState("");
     const [stuffCnt, setStuffCnt] = useState(3);
+    const [isImage, setIsImage] = useState(false);
     const [imageName, setImageName] = useState("");
     const [imageUrlUpload, setImageUrlUpload] = useState("");
+    const [formValues,setFormValues] = useState({
+        itemName:'',
+        cnt:'',
+        image:'',
+    })
 
     const onClick_modalSearch = () => {
-        setIsOpenSearch(true);
+        setIsOpen(true);
     }
     const onClick_modalAdd = () => {
         setIsOpenAdd(true);
     }
-    const onClick_revise = () => {
+    const onChange = async(event) =>{
+        event.preventDefault();
+        const {name,value}=event.target;
+        setFormValues((prev)=>({
+            ...prev,
+            [name]:value,
+        }))
+    }
+
+
+    //모달창에서 아이템 선택완료시 아이템 정보를 다시 요청하는 함수(시작)
+    const onSubmit_item = async () => { 
+        setIsImage(false);
+
+        const SEARCHURL = `http://27.96.131.106:8080/item/${itemId}`;
+
+        try {
+            console.log('itemId:', itemId);
+            const response = await axios.get(SEARCHURL);
+            console.log('get itemInfo succeeded!', response.data);
+            if (response.data) {
+                const tmp = {
+                    ...response.data,
+                    id:itemId,
+                }
+                console.log('tmp :',tmp);
+                if(tmp.image.slice(0,6)==="https:"){
+                    setIsImage(true);
+                    setImageUrlUpload(tmp.image)
+                }
+
+                setItemInfo(tmp);
+            }
+        } catch (error) {
+            console.log('get itemInfo failed ;(', error);
+        }
+    }
+    //모달창에서 아이템 선택완료시 아이템 정보를 다시 요청하는 함수(끝)
+
+
+
+    const onClick_revise = async() => {
         let result = window.confirm('해당 품목을 작성하신 내용으로 수정하시겠습니까?');
         if (result) {
-            alert("해당 품목의 수정이 완료되었습니다");
-            window.location.href = '/auth_stuff';
+            const REVISEURL = `http://27.96.131.106:8080/admin/item/${itemId}`;
+
+            const itemName = formValues.itemName;
+            const cnt = formValues.cnt;
+            const image = imageUrlUpload;
+
+            console.log('itemName,cnt,image will be posted :',
+            itemName, cnt, image)
+
+            try{
+                const response=await axios.patch(REVISEURL,
+                    {itemName,cnt,image});
+                console.log('response',response);
+                if(response.data==="수정 완료"){
+                    console.log('revise success!',response.data);
+                    alert("해당 품목의 수정이 완료되었습니다");
+                    window.location.href = '/auth_stuff';
+                }else{
+                    console.log('revise failed');
+                }
+            }catch(error){
+                console.log('revise error',error);
+            }
+
         }
     }
-    const onClick_delete = () => {
+    const onClick_delete = async() => {
         let result = window.confirm('해당 품목을 정말 삭제하시겠습니까?');
         if (result) {
-            alert("해당 품목은 삭제되었습니다");
-            window.location.href = '/auth_stuff';
+            const DELETEURL = `http://27.96.131.106:8080/admin/item/${itemId}`;
+
+            const itemName = formValues.itemName;
+            const cnt = formValues.cnt;
+            const image = imageUrlUpload;
+
+            console.log('itemName,cnt,image will be posted :',
+            itemName, cnt, image)
+
+            try{
+                const response=await axios.delete(DELETEURL);
+                console.log('response',response);
+                if(response.data==="삭제 완료"){
+                    console.log('delete success!',response.data);
+                    alert("해당 품목은 삭제되었습니다");
+                    window.location.href = '/auth_stuff';
+                }else{
+                    console.log('delete failed');
+                }
+            }catch(error){
+                console.log('delete error',error);
+            }
+
+            
         }
     }
+
+    useEffect(() => {
+        if(itemId)
+            onSubmit_item();
+    }, [itemId]);
+    useEffect(()=>{
+        setFormValues((prev)=>({
+            ...prev,
+            itemName:itemInfo.itemName,
+            cnt:itemInfo.cnt,
+            image:imageUrlUpload
+        }))
+    },[itemInfo,imageUrlUpload])
+    useEffect(()=>{console.log(
+        'formValue check!',formValues)},[formValues]);
     return <Wrapper>
         <Sejong></Sejong>
         <Link to='/auth_home' style={{ textDecoration: 'none' }}>
@@ -90,12 +200,12 @@ function Auth_Stuff() {
 
                 </FlexBox_Row>
                 <Line></Line>
-                {isOpenSearch &&
-                    <Modal_Search_Auth
-                        setIsOpenSearch={setIsOpenSearch}
-                        setItemManage={setItemManage}
+                {isOpen &&
+                    <Modal_SearchStuff
+                        setIsOpen={setIsOpen}
+                        setItemId={setItemId}
                         setIsSelected={setIsSelected}
-                    ></Modal_Search_Auth>}
+                    ></Modal_SearchStuff>}
                 {isSelected ? <StuffInfo>
                     <FlexBox_Row style={{
                         width: '100%',
@@ -104,7 +214,9 @@ function Auth_Stuff() {
                         <h1>
                             •품명
                         </h1>
-                        <input placeholder={itemManage}></input>
+                        <input placeholder={itemInfo.itemName}
+                        name = 'itemName'
+                        onChange={onChange}></input>
                     </FlexBox_Row>
                     <FlexBox_Row style={{
                         width: '100%',
@@ -114,14 +226,26 @@ function Auth_Stuff() {
                             •총 수량
                         </h1>
                         <input type='number'
-                            placeholder={stuffCnt}></input>
+                            placeholder={itemInfo.cnt}
+                            name = 'cnt'
+                            onChange={onChange}></input>
                     </FlexBox_Row>
-                    <FlexBox_Row>
+                    <FlexBox_Column style={{
+                        width: '100%',
+                        marginBottom:'36px'
+                    }}>
+                        <h1 style={{alignSelf:'flex-start'}}>
+                            •이미지
+                        </h1>
+                        {isImage ?
+                        <Img_Stuff src={imageUrlUpload}></Img_Stuff>
+                        :<Img_Stuff_None>이미지 없음</Img_Stuff_None>
+                    }
                         <ImageRevise
                             setImageName={setImageName}
                             setImageUrlUpload={setImageUrlUpload}>
                         </ImageRevise>
-                    </FlexBox_Row>
+                    </FlexBox_Column>
                     <FlexBox_Row style={{ alignSelf: 'center' }}>
                         <Btn_Manage
                             onClick={onClick_revise}
@@ -315,6 +439,32 @@ ${Icon}{
     width:12px;
     margin-bottom:2px;
 }
+`;
+
+const Img_Stuff = styled.img`
+    width:100%;
+    height:300px;
+    border:4px solid rgb(200,200,200);
+    border-radius:10%;
+
+    object-fit:contain;
+    margin-bottom:12px;
+
+    padding:8px;
+`;
+const Img_Stuff_None = styled.div`
+    width:100%;
+    height:300px;
+    border:4px solid rgb(200,200,200);
+    border-radius:10%;
+    margin-bottom:24px;
+
+    color:rgb(150,150,150);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
 `;
 
 const SearchBar = styled.div`

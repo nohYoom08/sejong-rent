@@ -13,7 +13,7 @@ import unchecked from '../images/unchecked.svg';
 import axios from 'axios';
 
 
-function Apply_Form() {
+function User_Apply_Form() {
     
 
     const [numList, setNumList] = useState([]);
@@ -247,7 +247,7 @@ function Apply_Form() {
         </MainBox>
     </Wrapper>
 }
-export default Apply_Form;
+export default User_Apply_Form;
 
 const FlexBox_Row = styled.div`
 display:flex;
