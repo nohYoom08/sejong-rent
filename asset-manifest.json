@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.js": "/Sejong_Rent/static/js/main.f67ec959.js",
+    "main.js": "/Sejong_Rent/static/js/main.6143c799.js",
     "static/media/forever.png": "/Sejong_Rent/static/media/forever.b00b24ad45ec8876cbc5.png",
     "static/media/sejong_campus.jpg": "/Sejong_Rent/static/media/sejong_campus.9e9a250e63bc8c0ce779.jpg",
     "static/media/Lenova.jpg": "/Sejong_Rent/static/media/Lenova.78834f84c09990f5ea5c.jpg",
@@ -21,9 +21,9 @@
     "static/media/🦆 icon _image.svg": "/Sejong_Rent/static/media/🦆 icon _image.eb3f307025f7d05b2d2ce7f34b93cf39.svg",
     "static/media/🦆 icon _document.svg": "/Sejong_Rent/static/media/🦆 icon _document.e6564a19a1716d0d75b1b2d5d626ed4e.svg",
     "static/media/🦆 icon _person.svg": "/Sejong_Rent/static/media/🦆 icon _person.01a48dcf885ec08c66e6057cf88a70df.svg",
-    "main.f67ec959.js.map": "/Sejong_Rent/static/js/main.f67ec959.js.map"
+    "main.6143c799.js.map": "/Sejong_Rent/static/js/main.6143c799.js.map"
   },
   "entrypoints": [
-    "static/js/main.f67ec959.js"
+    "static/js/main.6143c799.js"
   ]
 }
