@@ -15,7 +15,7 @@ import person from '../images/🦆 icon _person.svg';
 function User_Home() {
     return <Wrapper>
         <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
+        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
             <Banner>
                 <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
                 <FlexBox_Row>
