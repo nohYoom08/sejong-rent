@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
@@ -9,17 +9,17 @@ import Modal_Add_Auth from '../componentes/Modal_Add_Auth';
 import Signed_In from '../componentes/Signed_In';
 import ImageRevise from '../componentes/ImageRevise';
 
-import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
-import charger_lenova from '../images/Lenova.jpg';
 
 import axios from 'axios';
 
 
 
 function Auth_Stuff() {
+    const navigate=useNavigate();
+
     let auth_start = true;
     useEffect(() => {
         if (auth_start) {
@@ -111,7 +111,7 @@ function Auth_Stuff() {
                 if(response.data==="수정 완료"){
                     console.log('revise success!',response.data);
                     alert("해당 품목의 수정이 완료되었습니다");
-                    window.location.href = '/auth_stuff';
+                    navigate('/auth_stuff');
                 }else{
                     console.log('revise failed');
                 }
@@ -139,7 +139,7 @@ function Auth_Stuff() {
                 if(response.data==="삭제 완료"){
                     console.log('delete success!',response.data);
                     alert("해당 품목은 삭제되었습니다");
-                    window.location.href = '/auth_stuff';
+                    navigate('/auth_stuff');
                 }else{
                     console.log('delete failed');
                 }

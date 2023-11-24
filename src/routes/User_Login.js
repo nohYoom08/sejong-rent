@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import { ID_AUTH, PASSWORD_AUTH } from '../componentes/ID_PSWD_AUTH';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
@@ -12,6 +12,7 @@ import backpage from '../images/🦆 icon _arrow back.svg';
 
 
 function User_Login() {
+    const navigate = useNavigate();
 
     const [formValues, setFormValues] = useState({});
     const onChange = (event) => {
@@ -32,7 +33,7 @@ function User_Login() {
                 password : PASSWORD_AUTH,
             }
             sessionStorage.setItem('authInfo',JSON.stringify(authInfo));
-            window.location.href = 'https://coderorlim.github.io/auth_home';
+            navigate('/auth_home');
         }
         else
             alert("올바른 아이디 또는 비밀번호를 입력해주십시오!");

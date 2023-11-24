@@ -14,7 +14,7 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
     const [stuffList, setStuffList] = useState([]);
     const [totalPages,setTotalPages]=useState(0);
     const [numList, setNumList] = useState([]);
-    const [currentNum, setCurrentNum] = useState(2);
+    const [currentNum, setCurrentNum] = useState(1);
     const [fetched, setFetched] = useState(false);
 
 
@@ -43,7 +43,7 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
 
     const fetchData = async () => {
         const page = currentNum-1;  //백에선 page가 0부터 시작하므로
-        const size = 4;
+        const size = 10;
         console.log('page,size:',page,size);
         try {
             const response = await axios.get(STUFFURL,
@@ -98,7 +98,7 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
                         onClick={onClick_Stuff}
                         value={item.id}
                         key={key}>
-                        {item.name}
+                        {item.itemName}
                     </Stuff>
 
                 )

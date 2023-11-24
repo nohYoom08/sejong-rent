@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
 
 import styled from 'styled-components';
 
@@ -14,7 +14,7 @@ import axios from 'axios';
 
 
 function User_Apply_Form() {
-
+    const navigate=useNavigate();
 
     const [numList, setNumList] = useState([]);
     const [studentNoCard_check, setstudentNoCard_check] = useState(false);
@@ -88,7 +88,7 @@ function User_Apply_Form() {
                     alert("신청이 성공적으로 완료되었습니다!");
                     console.log('succeded', response.data);
                     sessionStorage.clear();
-                    window.location.href = '/apply';
+                    navigate('/apply');
                 }
                 console.log('post failed ;(');
             } catch (error) {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
@@ -15,6 +15,7 @@ import axios from 'axios';
 
 
 function User_Apply() {
+    const navigate = useNavigate();
 
     const [isOpen, setIsOpen] = useState(false);
     const [itemId, setItemId] = useState(1);
@@ -57,7 +58,7 @@ function User_Apply() {
         let result = window.confirm("해당 품목으로 대여를 신청하시겠습니까?")
         if (result) {
             sessionStorage.setItem('itemInfo', JSON.stringify(itemInfo));
-            window.location.href = '/apply_form';
+            navigate('/apply_form');
         }
     }
 

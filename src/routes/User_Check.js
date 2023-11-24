@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
@@ -15,7 +15,7 @@ import charger_lenova from '../images/Lenova.jpg';
 import axios from 'axios';
 
 function User_Check() {
-
+    const navigate = useNavigate();
 
     const [stuffCnt,setStuffCnt]=useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +42,7 @@ function User_Check() {
 
         try{
             console.log('will be axios-studentNo,password:',studentNo,password);
-            const response = await axios.get(SEARCHURL,
+            const response = await axios.post(SEARCHURL,
             {studentNo,password});
             console.log('response',response);
             if(response.data){
@@ -57,6 +57,8 @@ function User_Check() {
     }
 
     const onClick_cancle = async(event)=>{
+        const result = window.confirm("해당 신청내역을 삭제하시겠습니까?");
+        if (result){
         event.preventDefault();
         const rentalId = event.target.value;
         const DELETEURL = `http://27.96.131.106:8080/rental/${rentalId}`;
@@ -67,6 +69,7 @@ function User_Check() {
             console.log('response:',response);
             if(response.data){
                 console.log('delete success!',response.data);
+                alert("삭제를 성공적으로 완료했습니다!")
                 onClick_searched();
             }else{
                 console.log('delete fail')
@@ -74,6 +77,7 @@ function User_Check() {
         }catch(error){
             console.log('delete error',error);
         }
+    }
     }
 
     const onClick_revise = async(event)=>{  //뺄지 말지 고민
@@ -92,7 +96,7 @@ function User_Check() {
                 try{
                     console.log('will be axios - name,password,studentNo,cnt:',
                     name,password,studentNo,cnt);
-                    const response = await axios.put(REVISEURL,
+                    const response = await axios.patch(REVISEURL,
                         {name,password,studentNo,cnt});
                     if(response.data){
                         console.log('revise success!',response.data);
@@ -168,8 +172,9 @@ function User_Check() {
                             {dataList.map((item,key)=>(
                                 <tr key={key}>
                                     <td>{item.itemName}</td>
-                                    <td><img src={item.image}/></td>
+                                    <td><img src={item.url}/></td>
                                     <td>{item.cnt}</td>
+                                    <td>{item.status}</td>
                                     <td>
                                     <Btn_Rent 
                                     value={item.rentalId}

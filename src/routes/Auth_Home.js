@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
@@ -13,6 +13,7 @@ import document from '../images/🦆 icon _document.svg';
 
 
 function Auth_Home() {
+    const navigate = useNavigate();
 
     let auth_start = true;
     useEffect(() => {
@@ -25,7 +26,7 @@ function Auth_Home() {
 
     const onClick_logout=()=>{
         sessionStorage.clear();
-        window.location.href='/';
+        navigate('/Sejong_Rent');
     }
     return <Wrapper>
         <Sejong></Sejong>
