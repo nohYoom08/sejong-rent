@@ -15,7 +15,6 @@ import charger_lenova from '../images/Lenova.jpg';
 import axios from 'axios';
 
 function User_Check() {
-    const SEARCHURL = 'http://27.96.131.106:8080/rentals';
 
 
     const [stuffCnt,setStuffCnt]=useState(0);
@@ -37,14 +36,14 @@ function User_Check() {
     }
 
     const onClick_searched = async() =>{
-        setIsSearched(true);
-
+        const SEARCHURL = 'http://27.96.131.106:8080/rentals';
         const studentNo = formValues.studentNo;
         const password=formValues.password;
+
         try{
-            console.log('will be axios-studentNo,password : ',studentNo,password);
+            console.log('will be axios-studentNo,password:',studentNo,password);
             const response = await axios.get(SEARCHURL,
-            {params:{studentNo,password}});
+            {studentNo,password});
             console.log('response',response);
             if(response.data){
                 console.log('searchData succeed!',response.data);
@@ -166,6 +165,27 @@ function User_Check() {
                             </tr>
                         </thead>
                         <tbody>
+                            {dataList.map((item,key)=>(
+                                <tr key={key}>
+                                    <td>{item.itemName}</td>
+                                    <td><img src={item.image}/></td>
+                                    <td>{item.cnt}</td>
+                                    <td>
+                                    <Btn_Rent 
+                                    value={item.rentalId}
+                                    onClick={onClick_cancle}
+                                    bgColor='#D7556C'>
+                                        대여신청<br></br>취소하기
+                                    </Btn_Rent>
+                                    <Btn_Rent 
+                                    value={item.rentalId}
+                                    onClick={onClick_revise}
+                                    bgColor='#333394'>
+                                        대여수량<br></br>수정하기
+                                    </Btn_Rent>
+                                    </td>
+                                </tr>
+                            ))}
                             <tr>
                                 <td>(레노버)<br></br>노트북 충전기</td>
                                 <td><img src={charger_lenova}></img></td>
@@ -184,26 +204,6 @@ function User_Check() {
                                     </Btn_Rent>
                                 </td>
                             </tr>
-                            {dataList.map((item, key)=><tr key={key}>
-                                <td>{item.name}</td>
-                                <td><img src={item.image}></img></td>
-                                <td>{item.cnt}</td>
-                                <td>{item.statement}</td>
-                                <td>
-                                    <Btn_Rent 
-                                    onClick={onClick_cancle}
-                                    value = {item.id} 
-                                    bgColor='#D7556C'>
-                                        대여신청<br></br>취소하기
-                                    </Btn_Rent>
-                                    <Btn_Rent 
-                                    onClick={onClick_revise}
-                                    value = {item.id} 
-                                    bgColor='#333394'>
-                                        대여수량<br></br>수정하기
-                                    </Btn_Rent>
-                                </td>
-                            </tr>)}
                         </tbody>
                     </Table>
                 </TableBox>

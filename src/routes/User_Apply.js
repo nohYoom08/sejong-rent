@@ -14,7 +14,7 @@ import search from '../images/🦆 icon _search.svg';
 import axios from 'axios';
 
 
-function Apply() {
+function User_Apply() {
 
     const [isOpen, setIsOpen] = useState(false);
     const [itemId, setItemId] = useState(1);
@@ -130,7 +130,7 @@ function Apply() {
         </MainBox>
     </Wrapper>
 }
-export default Apply;
+export default User_Apply;
 
 
 const FlexBox_Row = styled.div`

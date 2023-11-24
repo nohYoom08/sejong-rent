@@ -4,10 +4,8 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_Apply from '../componentes/Modal_SearchStuff';
 import Signed_In from '../componentes/Signed_In';
 
-import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
@@ -32,6 +30,12 @@ function Apply() {
     const stuffCnt = 1;
     const [dataList, setDataList] = useState([]);
     const [fetched, setFetched] = useState(false);
+    const [upperDate,setUpperDate]=useState(false);
+    const [upperStatus,setUpperStatus]=useState(false);
+    const [dateText,setDateText]=useState(`신청일시
+    ▼`)
+    const [statusText,setStatusText]=useState(`상태
+    ▼`)
 
     const fetchDataList = async () => {
         try {
@@ -48,12 +52,47 @@ function Apply() {
         }
     }
 
+    const onClick_date=()=>{
+        if(upperDate){
+        dataList.sort((a,b)=>
+        a.date.localeCompare(b.date));
+        setUpperDate(false);
+        setDateText(`신청일시
+        ▼`)
+        }
+        else{
+            dataList.sort((a,b)=>
+        b.date.localeCompare(a.date));
+        setUpperDate(true);
+        setDateText(`신청일시
+        ▲`)
+        }
+    }
+
+
+    const onClick_status=()=>{
+        if(upperStatus){
+        dataList.sort((a,b)=>
+        a.status.localeCompare(b.status));
+        setUpperStatus(false);
+        setStatusText(`상태
+        ▼`)
+        }
+        else{
+            dataList.sort((a,b)=>
+        b.status.localeCompare(a.status));
+        setUpperStatus(true);
+        setStatusText(`상태
+        ▲`)
+        }
+    }
+
     const onClick_accept = async (event) => {
         event.preventDefault();
         const rentalId = event.target.value;
 
         const result = window.confirm(
-            `대여신청 ID #${rentalId}의 신청내역을 수락하시겠습니까?`);
+            `대여신청 ID #${rentalId.toString().padStart(3, '0')}의 신청내역을 수락하시겠습니까?`);
 
         if (result) {
             console.log('rentalId will be axiosed', rentalId);
@@ -65,7 +104,7 @@ function Apply() {
                 console.log('response:', response);
                 if (response.data === "대여 완료") {
                     console.log('accept success :', response.data);
-                    alert(`#${rentalId}의 대여신청을 성공적으로 수락하였습니다.`);
+                    alert(`#${rentalId.toString().padStart(3, '0')}의 대여신청을 성공적으로 수락하였습니다.`);
                     fetchDataList();
                 } else {
                     console.log('accept fail');
@@ -81,7 +120,7 @@ function Apply() {
         const rentalId = event.target.value;
 
         const result = window.confirm(
-            `대여신청 ID #${rentalId}의 대여내역을 '반납 완료' 처리하시겠습니까?`);
+            `대여신청 ID #${rentalId.toString().padStart(3, '0')}의 대여내역을 '반납 완료' 처리하시겠습니까?`);
 
         if (result) {
             console.log('rentalId will be axiosed', rentalId);
@@ -93,7 +132,7 @@ function Apply() {
                 console.log('response:', response);
                 if (response.data === "반납 완료") {
                     console.log('returned success :', response.data);
-                    alert(`#${rentalId}의 반납처리를 성공적으로 수락하였습니다.`);
+                    alert(`#${rentalId.toString().padStart(3, '0')}의 반납처리를 성공적으로 수락하였습니다.`);
                     fetchDataList();
                 } else {
                     console.log('returned fail');
@@ -109,7 +148,7 @@ function Apply() {
         const rentalId = event.target.value;
 
         const result = window.confirm(
-            `대여신청 ID #${rentalId}의 신청내역을 삭제하시겠습니까?`);
+            `대여신청 ID #${rentalId.toString().padStart(3, '0')}의 신청내역을 삭제하시겠습니까?`);
 
         if (result) {
             console.log('rentalId will be axiosed', rentalId);
@@ -121,7 +160,7 @@ function Apply() {
                 console.log('response:', response);
                 if (response.data === "삭제 완료") {
                     console.log('delete success :', response.data);
-                    alert(`#${rentalId}의 대여신청내역을 성공적으로 삭제하였습니다.`);
+                    alert(`#${rentalId.toString().padStart(3, '0')}의 대여신청내역을 성공적으로 삭제하였습니다.`);
                     fetchDataList();
                 } else {
                     console.log('delte fail');
@@ -169,10 +208,12 @@ function Apply() {
                             <tr>
                                 <th>학번/<br></br>이름</th>
                                 <th>ID</th>
-                                <th>신청<br></br>일시</th>
+                                <th onClick={onClick_date}>
+                                    {dateText}</th>
                                 <th>품명</th>
                                 <th>잔여<br></br>수량</th>
-                                <th>상태</th>
+                                <th onClick={onClick_status}>
+                                    {statusText}</th>
                                 <th>비고</th>
                             </tr>
                         </thead>
@@ -182,9 +223,10 @@ function Apply() {
                                     <td>{item.studentNo}<br></br>
                                         {item.name}</td>
                                     <td>#{item.rentalId.toString().padStart(3, '0')}</td>
-                                    <td>{item.date.slice(0, 10)}/
+                                    <td>{item.date.slice(0, 10).replace(/-/g, ".")}/<br></br>
+                                    {/* 문자열 내의 '-'을 모두 '.'으로 바꾸는 법 */}
                                         {item.date.slice(11, 19)}</td>
-                                    <td>{item.name}</td>
+                                    <td>{item.itemName}</td>
                                     <td>{item.cnt}</td>
                                     <td>
                                         {
@@ -211,7 +253,7 @@ function Apply() {
                                             </Btn_Rent>
                                         }
                                         {(item.status === "RENTAL") &&
-                                            <Btn_Rent 
+                                            <Btn_Rent
                                                 onClick={onClick_returned}
                                                 value={item.rentalId}
                                                 bgColor='#333394'>
@@ -242,7 +284,6 @@ function Apply() {
                                     </Btn_Rent>
                                 </td>
                             </tr>
-
                             <tr>
                                 <td>20011001/<br></br>김세종</td>
                                 <td>#201-01</td>
@@ -251,34 +292,9 @@ function Apply() {
                                 <td>{stuffCnt}</td>
                                 <td>신청중</td>
                                 <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#D7556C'>
-                                        신청확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
+                                    <Btn_Rent
+                                        bgColor='#333394'>
+                                        반납확인
                                     </Btn_Rent>
                                 </td>
                             </tr>
@@ -290,8 +306,8 @@ function Apply() {
                                 <td>{stuffCnt}</td>
                                 <td>대여중</td>
                                 <td>
-                                    <Btn_Rent bgColor='#333394'>
-                                        반납확인
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        삭제하기
                                     </Btn_Rent>
                                 </td>
                             </tr>
@@ -549,13 +565,19 @@ thead{
         line-height: 18px; /* 128.571% */
     }
     th:first-child{
-        width:80px;
+        width:10px;
     }
     th:nth-child(2){
         width:10px;
     }
     th:nth-child(3){
-        width:100px;
+        width:50px;
+        &:hover{
+            background-color:rgb(250,200,200);
+        }
+        &:active{
+            background-color:rgb(250,200,200);
+        }
     }
     th:nth-child(4){
         width:100px;
@@ -564,18 +586,27 @@ thead{
         width:100px;
     }
     th:nth-child(6){
-        width:120px;
+        width:100px;
+        &:hover{
+            background-color:rgb(250,200,200);
+        }
+        &:active{
+            background-color:rgb(250,200,200);
+        }
     }
     th:nth-child(7){
-        width:100px;
+        width:10px;
     }
 }
 tbody{
     td{
         font-weight:100;
-        font-size:8px;
+        font-size:10px;
         border: 1px solid #828282;
         background: #FFF;
+    }
+    td:nth-child(5){
+        font-size:12px;
     }
     img{
         width:80px;

@@ -32,7 +32,7 @@ function User_Login() {
                 password : PASSWORD_AUTH,
             }
             sessionStorage.setItem('authInfo',JSON.stringify(authInfo));
-            window.location.href = '/auth_home';
+            window.location.href = 'https://coderorlim.github.io/auth_home';
         }
         else
             alert("올바른 아이디 또는 비밀번호를 입력해주십시오!");

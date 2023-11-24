@@ -14,7 +14,7 @@ import axios from 'axios';
 
 
 function User_Apply_Form() {
-    
+
 
     const [numList, setNumList] = useState([]);
     const [studentNoCard_check, setstudentNoCard_check] = useState(false);
@@ -26,7 +26,7 @@ function User_Apply_Form() {
     const [itemInfo, setItemInfo] = useState(4);
 
     const [formValues, setFormValues] = useState({
-        studentNo:'',
+        studentNo: '',
         cnt: '1',
         name: '',
         password: ''
@@ -62,50 +62,53 @@ function User_Apply_Form() {
     }
     const onSubmit = async (event) => {
         event.preventDefault();
-        
-        const itemId = Number(itemInfo.id);
-        const studentNo = formValues.studentNo;
-        const cnt = formValues.cnt;
-        const name = formValues.name;
-        const password = formValues.password;
 
-        const APPLYURL = `http://27.96.131.106:8080/item/${itemId}`;
-        // const date = new Date();
-        // const year = date.getFullYear().toString().padStart(4, '0');
-        // const month = (date.getMonth() + 1).toString().padStart(2, '0');
-        // const day = date.getDay().toString().padStart(2, '0');
-        // const dateApply = `${year}-${month}-${day}`;
+        const result = window.confirm('작성해주신 정보로 대여신청을 하시겠습니까?');
+        if (result) {
+            const itemId = Number(itemInfo.id);
+            const studentNo = formValues.studentNo;
+            const cnt = formValues.cnt;
+            const name = formValues.name;
+            const password = formValues.password;
 
-        console.log('will be posted:',
-        itemId,itemInfo.itemName,name, password, studentNo, cnt );
-        try {
-            const response = await axios.post(APPLYURL, {
-                name, password, studentNo, cnt
-            })
-            if (response.data) {
-                alert("신청이 성공적으로 완료되었습니다!");
-                console.log('succeded', response.data);
-                sessionStorage.clear();
-                window.location.href = '/apply';
+            const APPLYURL = `http://27.96.131.106:8080/item/${itemId}`;
+            // const date = new Date();
+            // const year = date.getFullYear().toString().padStart(4, '0');
+            // const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            // const day = date.getDay().toString().padStart(2, '0');
+            // const dateApply = `${year}-${month}-${day}`;
+
+            console.log('will be posted:',
+                itemId, itemInfo.itemName, name, password, studentNo, cnt);
+            try {
+                const response = await axios.post(APPLYURL, {
+                    name, password, studentNo, cnt
+                })
+                if (response.data) {
+                    alert("신청이 성공적으로 완료되었습니다!");
+                    console.log('succeded', response.data);
+                    sessionStorage.clear();
+                    window.location.href = '/apply';
+                }
+                console.log('post failed ;(');
+            } catch (error) {
+                console.log('post failed error', error);
             }
-            console.log('post failed ;(');
-        } catch (error) {
-            console.log('post failed error', error);
         }
     }
 
-    
+
 
     useEffect(() => {
         const storedItemInfo = JSON.parse(sessionStorage.getItem('itemInfo'));
         console.log('storedItemInfo', storedItemInfo);
         setItemInfo(storedItemInfo);
     }, [])
-    useEffect(()=>{
+    useEffect(() => {
         if (numList.length == 0)
             for (let i = 0; i < itemInfo.cnt; i++)
-            numList.push(i + 1);
-    },[itemInfo])
+                numList.push(i + 1);
+    }, [itemInfo])
     useEffect(() => {
         if (studentNoCard_check && bill_check) {
             setAll_Check(true);
@@ -129,9 +132,9 @@ function User_Apply_Form() {
     }, [all_check, Object.values(formValues)])
 
 
-    useEffect(()=>{
-        console.log('formValues check! : ',formValues);
-    },[formValues])
+    useEffect(() => {
+        console.log('formValues check! : ', formValues);
+    }, [formValues])
     return <Wrapper>
         <Sejong></Sejong>
         <Link to='/' style={{ textDecoration: 'none' }}>

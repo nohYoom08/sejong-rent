@@ -65,7 +65,11 @@ function ImageRevise({ setImageName, setImageUrlUpload }) {
 export default ImageRevise;
 
 
-
+const FlexBox_Row = styled.div`
+display:flex;
+justify-content:center;
+align-items:center;
+`;
 const FlexBox_Column = styled.div`
 margin-bottom:20px;
 
