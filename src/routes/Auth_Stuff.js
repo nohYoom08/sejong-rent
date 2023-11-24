@@ -6,12 +6,145 @@ import styled from 'styled-components';
 
 import Modal_Search_Auth from '../componentes/Modal_Search_Auth';
 import Modal_Add_Auth from '../componentes/Modal_Add_Auth';
+import Signed_In from '../componentes/Signed_In';
+import ImageRevise from '../componentes/ImageRevise';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
 import charger_lenova from '../images/Lenova.jpg';
+
+
+
+function Auth_Stuff() {
+    let auth_start = true;
+    useEffect(() => {
+        if (auth_start) {
+            Signed_In();
+            auth_start = false;
+        }
+    }, []);
+
+
+    const [isOpenSearch, setIsOpenSearch] = useState(false);
+    const [itemManage, setItemManage] = useState("");
+    const [isSelected, setIsSelected] = useState(false);
+    const [isOpenAdd, setIsOpenAdd] = useState(false);
+    const [stuffCnt, setStuffCnt] = useState(3);
+    const [imageName, setImageName] = useState("");
+    const [imageUrlUpload, setImageUrlUpload] = useState("");
+
+    const onClick_modalSearch = () => {
+        setIsOpenSearch(true);
+    }
+    const onClick_modalAdd = () => {
+        setIsOpenAdd(true);
+    }
+    const onClick_revise = () => {
+        let result = window.confirm('해당 품목을 작성하신 내용으로 수정하시겠습니까?');
+        if (result) {
+            alert("해당 품목의 수정이 완료되었습니다");
+            window.location.href = '/auth_stuff';
+        }
+    }
+    const onClick_delete = () => {
+        let result = window.confirm('해당 품목을 정말 삭제하시겠습니까?');
+        if (result) {
+            alert("해당 품목은 삭제되었습니다");
+            window.location.href = '/auth_stuff';
+        }
+    }
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <SecondBox>
+                <Link to='/auth_home' style={{
+                    textDecoration: 'none',
+                    alignSelf: 'flex-start'
+                }}>
+                    <BackPage>
+                        <Icon src={backpage}></Icon>
+                        이전 페이지
+                    </BackPage>
+                </Link>
+                <FlexBox_Row style={{
+                    width: '320px',
+                    marginBottom: '8px',
+                    justifyContent: 'space-evenly'
+                }}>
+                    <SearchBar>
+                        <img src={search}></img>
+                        <div onClick={onClick_modalSearch}>대여품 검색</div>
+                    </SearchBar>
+                    <AddBtn onClick={onClick_modalAdd}>추가 +</AddBtn>
+
+                </FlexBox_Row>
+                <Line></Line>
+                {isOpenSearch &&
+                    <Modal_Search_Auth
+                        setIsOpenSearch={setIsOpenSearch}
+                        setItemManage={setItemManage}
+                        setIsSelected={setIsSelected}
+                    ></Modal_Search_Auth>}
+                {isSelected ? <StuffInfo>
+                    <FlexBox_Row style={{
+                        width: '100%',
+                        justifyContent: 'space-between'
+                    }}>
+                        <h1>
+                            •품명
+                        </h1>
+                        <input placeholder={itemManage}></input>
+                    </FlexBox_Row>
+                    <FlexBox_Row style={{
+                        width: '100%',
+                        justifyContent: 'space-between'
+                    }}>
+                        <h1>
+                            •총 수량
+                        </h1>
+                        <input type='number'
+                            placeholder={stuffCnt}></input>
+                    </FlexBox_Row>
+                    <FlexBox_Row>
+                        <ImageRevise
+                            setImageName={setImageName}
+                            setImageUrlUpload={setImageUrlUpload}>
+                        </ImageRevise>
+                    </FlexBox_Row>
+                    <FlexBox_Row style={{ alignSelf: 'center' }}>
+                        <Btn_Manage
+                            onClick={onClick_revise}
+                            bgColor='#D7556C'>
+                            수정하기
+                        </Btn_Manage>
+                        <Btn_Manage
+                            onClick={onClick_delete}
+                            bgColor='#333394'>
+                            삭제하기
+                        </Btn_Manage>
+                    </FlexBox_Row>
+                </StuffInfo>
+                    : <Text_Blank>
+                        수정 및 삭제를 원하시는 <br></br>대여품을 검색해주십시오
+                    </Text_Blank>}
+            </SecondBox>
+            {isOpenAdd &&
+                <Modal_Add_Auth setIsOpenAdd={setIsOpenAdd}/>}
+        </MainBox>
+    </Wrapper>
+}
+export default Auth_Stuff;
 
 
 const FlexBox_Row = styled.div`
@@ -339,123 +472,3 @@ font-weight: 500;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Auth_Stuff() {
-    const [isOpenSearch, setIsOpenSearch] = useState(false);
-    const [itemManage, setItemManage] = useState("");
-    const [isSelected, setIsSelected] = useState(false);
-    const [isOpenAdd, setIsOpenAdd] = useState(false);
-    const [stuffCnt, setStuffCnt] = useState(3);
-
-    const onClick_modalSearch = () => {
-        setIsOpenSearch(true);
-    }
-    const onClick_modalAdd = () => {
-        setIsOpenAdd(true);
-    }
-    const onClick_reviseImg = () => {
-    }
-    const onClick_revise=()=>{
-        let result = window.confirm('해당 품목을 작성하신 내용으로 수정하시겠습니까?');
-        if(result){
-            alert("해당 품목의 수정이 완료되었습니다");
-            window.location.href='/auth_stuff';
-        }
-    }
-    const onClick_delete=()=>{
-        let result = window.confirm('해당 품목을 정말 삭제하시겠습니까?');
-        if(result){
-            alert("해당 품목은 삭제되었습니다");
-            window.location.href='/auth_stuff';
-        }
-    }
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <SecondBox>
-                <Link to='/auth_home' style={{
-                    textDecoration: 'none',
-                    alignSelf: 'flex-start'
-                }}>
-                    <BackPage>
-                        <Icon src={backpage}></Icon>
-                        이전 페이지
-                    </BackPage>
-                </Link>
-                <FlexBox_Row style={{
-                    width: '320px',
-                    marginBottom: '8px',
-                    justifyContent: 'space-evenly'
-                }}>
-                    <SearchBar>
-                        <img src={search}></img>
-                        <div onClick={onClick_modalSearch}>대여품 검색</div>
-                    </SearchBar>
-                    <AddBtn onClick={onClick_modalAdd}>추가 +</AddBtn>
-                    {isOpenAdd && <Modal_Add_Auth setIsOpenAdd={setIsOpenAdd}></Modal_Add_Auth>}
-                </FlexBox_Row>
-                <Line></Line>
-                {isOpenSearch &&
-                    <Modal_Search_Auth
-                        setIsOpenSearch={setIsOpenSearch}
-                        setItemManage={setItemManage}
-                        setIsSelected={setIsSelected}
-                    ></Modal_Search_Auth>}
-                {isSelected ? <StuffInfo>
-                    <FlexBox_Row style={{ 
-                        width:'100%',
-                        justifyContent: 'space-between' }}>
-                        <h1>
-                            •품명
-                        </h1>
-                        <input placeholder={itemManage}></input>
-                    </FlexBox_Row>
-                    <FlexBox_Row style={{ 
-                        width:'100%',
-                        justifyContent: 'space-between' }}>
-                        <h1>
-                            •총 수량
-                        </h1>
-                        <input type='number'
-                            placeholder={stuffCnt}></input>
-                    </FlexBox_Row>
-                    <FlexBox_Row>
-                        <h1>
-                            •이미지
-                        </h1>
-                        <AddBtn onClick={onClick_reviseImg}>
-                            이미지 변경
-                        </AddBtn>
-                    </FlexBox_Row>
-                    <img src={charger_lenova}></img>
-                    <FlexBox_Row style={{ alignSelf: 'center' }}>
-                        <Btn_Manage 
-                        onClick={onClick_revise}
-                        bgColor='#D7556C'>
-                            수정하기
-                        </Btn_Manage>
-                        <Btn_Manage 
-                        onClick={onClick_delete}
-                        bgColor='#333394'>
-                            삭제하기
-                        </Btn_Manage>
-                    </FlexBox_Row>
-                </StuffInfo>
-                    : <Text_Blank>
-                        수정 및 삭제를 원하시는 <br></br>대여품을 검색해주십시오
-                    </Text_Blank>}
-            </SecondBox>
-        </MainBox>
-    </Wrapper>
-}
-export default Auth_Stuff;

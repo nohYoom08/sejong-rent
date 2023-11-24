@@ -5,12 +5,311 @@ import { Link } from "react-router-dom";
 import styled from 'styled-components';
 
 import Modal_Apply from '../componentes/Modal_Apply';
+import Signed_In from '../componentes/Signed_In';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
-import charger_lenova from '../images/Lenova.jpg';
+
+import axios from "react";
+
+
+
+
+function Apply() {
+    let auth_start = true;
+    useEffect(() => {
+        if (auth_start) {
+            Signed_In();
+            auth_start = false;
+        }
+    }, []);
+
+    const FETCHURL = 'http://27.96.131.106:8080/';
+    const SEARCHURL = 'http://27.96.131.106:8080/';
+
+    const [dataList, setDataList] = useState({});
+    const [stuffCnt, setStuffCnt] = useState(0);
+    const fetchDataList = async () => {
+        try {
+            const response = await axios.get(FETCHURL);
+            if (response.data) {
+                console.log('fetch success!', response.data);
+                setDataList(response.data);
+            } else {
+                console.log('fetch failed / not errored');
+            }
+        } catch (error) {
+            console.log('fetch failed / error:', error);
+        }
+    }
+
+
+    const onClick_search = async (event) => {
+        event.preventDefault();
+
+    };
+
+    useEffect(() => { fetchDataList() }, []);
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <SecondBox>
+                <Link to='/auth_home' style={{ textDecoration: 'none' }}>
+                    <BackPage>
+                        <Icon src={backpage}></Icon>
+                        이전 페이지
+                    </BackPage>
+                </Link>
+                <FlexBox_Row style={{ marginBottom: '8px' }}>
+                    <SearchBar>
+                        <img src={search}></img>
+                        <input placeholder='학번/이름 또는 품명 검색'></input>
+                    </SearchBar>
+                    <SearchBtn onClick={onClick_search}>검색</SearchBtn>
+                </FlexBox_Row>
+                <TableBox>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>학번/<br></br>이름</th>
+                                <th>ID</th>
+                                <th>신청<br></br>일시</th>
+                                <th>품명</th>
+                                <th>잔여<br></br>수량</th>
+                                <th>상태</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>반납완료</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        반납완료
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#D7556C'>
+                                        신청확인
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#D7556C'>
+                                        신청확인
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#A6A6A6'>
+                                        대여불가
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>20011001/<br></br>김세종</td>
+                                <td>#201-01</td>
+                                <td>2023.11.04/<br></br>14:03:05</td>
+                                <td>충전기</td>
+                                <td>{stuffCnt}</td>
+                                <td>대여중</td>
+                                <td>
+                                    <Btn_Rent bgColor='#333394'>
+                                        반납확인
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </Table>
+                </TableBox>
+            </SecondBox>
+        </MainBox>
+    </Wrapper>
+}
+export default Apply;
+
 
 
 const FlexBox_Row = styled.div`
@@ -308,269 +607,3 @@ line-height: 18px; /* 90% */
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-
-function Apply() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [stuffCnt, setStuffCnt] = useState(0);
-
-    const onClick_search = () => {
-    }
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <SecondBox>
-                <Link to='/auth_home' style={{ textDecoration: 'none' }}>
-                    <BackPage>
-                        <Icon src={backpage}></Icon>
-                        이전 페이지
-                    </BackPage>
-                </Link>
-                <FlexBox_Row style={{marginBottom:'8px'}}>
-                    <SearchBar>
-                        <img src={search}></img>
-                        <input placeholder='학번/이름 또는 품명 검색'></input>
-                    </SearchBar>
-                    <SearchBtn onClick={onClick_search}>검색</SearchBtn>
-                </FlexBox_Row>
-                <TableBox>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>학번/<br></br>이름</th>
-                                <th>ID</th>
-                                <th>신청<br></br>일시</th>
-                                <th>품명</th>
-                                <th>잔여<br></br>수량</th>
-                                <th>상태</th>
-                                <th>비고</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>반납완료</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        반납완료
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#D7556C'>
-                                        신청확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#D7556C'>
-                                        신청확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        대여불가
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>대여중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#333394'>
-                                        반납확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-
-                        </tbody>
-                    </Table>
-                </TableBox>
-            </SecondBox>
-        </MainBox>
-    </Wrapper>
-}
-export default Apply;

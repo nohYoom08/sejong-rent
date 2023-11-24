@@ -34,3 +34,5 @@ function App() {
 }
 
 export default App;
+//"homepage": "https://coderorlim.github.io/Sejong_Rent/"
+//"homepage": "http://localhost:3000/"

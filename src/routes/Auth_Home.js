@@ -4,10 +4,61 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
+import Signed_In from '../componentes/Signed_In';
+
 import forever from '../images/forever.png';
 import person from '../images/🦆 icon _person.svg';
 import person_auth from '../images/🦆 icon _person_auth.svg';
 import document from '../images/🦆 icon _document.svg';
+
+
+function Auth_Home() {
+
+    let auth_start = true;
+    useEffect(() => {
+        if (auth_start) {
+            Signed_In();
+            auth_start = false;
+        }
+    }, []);
+
+
+    const onClick_logout=()=>{
+        sessionStorage.clear();
+        window.location.href='/';
+    }
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <Link to='/auth_apply' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <Icon_Person src={person_auth}></Icon_Person>
+                    <p style={{ marginLeft: '-16px' }}>대여 신청관리</p>
+                </BtnBig>
+            </Link>
+            <Link to='/auth_stuff' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <Icon_Document src={document}></Icon_Document>
+                    <p style={{ marginLeft: '-16px' }}>대여품 관리</p>
+                </BtnBig>
+            </Link>
+            <BtnSmall onClick={onClick_logout}>
+                <IconSmall src={person}></IconSmall>
+                <p>로그아웃</p>
+            </BtnSmall>
+        </MainBox>
+    </Wrapper>
+}
+export default Auth_Home;
 
 
 const FlexBox_Row = styled.div`
@@ -126,6 +177,7 @@ border-radius: 20px;
 background: #FECFD8;
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 border:0;
+color:black;
 
 padding-left:28px;
 padding-right:28px;
@@ -135,8 +187,13 @@ align-items:center;
 cursor:pointer;
 
 &:hover{
-    border:4px solid rgb(256,200,200);
-    box-shadow:none;
+    color:white;
+    background-color:rgb(220,180,180);
+}
+&:active{
+    color:white;
+    background-color:rgb(220,180,180);
+    box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 p{
@@ -145,7 +202,6 @@ padding:0;
 width: 179px;
 height: 26px;
 
-color: black;
 text-align: center;
 font-size: 20px;
 font-style: normal;
@@ -169,6 +225,7 @@ border-radius: 20px;
 background: #FECFD8;
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 border:0;
+color: black;
 cursor:pointer;
 
 padding-left:16px;
@@ -177,8 +234,13 @@ justify-content:center;
 align-items:center;
 
 &:hover{
-    border:4px solid rgb(256,200,200);
-    box-shadow:none;
+    color:white;
+    background-color:rgb(220,180,180);
+}
+&:active{
+    color:white;
+    background-color:rgb(220,180,180);
+    box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 p{
@@ -189,7 +251,7 @@ flex-direction: column;
 justify-content: center;
 flex-shrink: 0;
 
-color: black;
+
 text-align: center;
 font-size: 12px;
 font-style: normal;
@@ -223,42 +285,3 @@ margin-right:-12px;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Auth_Home() {
-    const onClick_logout=()=>{
-        sessionStorage.clear();
-        window.location.href='/';
-    }
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/auth_home' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <Link to='/auth_apply' style={{ textDecoration: 'none' }}>
-                <BtnBig>
-                    <Icon_Person src={person_auth}></Icon_Person>
-                    <p style={{ marginLeft: '-16px' }}>대여 신청관리</p>
-                </BtnBig>
-            </Link>
-            <Link to='/auth_stuff' style={{ textDecoration: 'none' }}>
-                <BtnBig>
-                    <Icon_Document src={document}></Icon_Document>
-                    <p style={{ marginLeft: '-16px' }}>대여품 관리</p>
-                </BtnBig>
-            </Link>
-            <BtnSmall onClick={onClick_logout}>
-                <IconSmall src={person}></IconSmall>
-                <p>로그아웃</p>
-            </BtnSmall>
-        </MainBox>
-    </Wrapper>
-}
-export default Auth_Home;

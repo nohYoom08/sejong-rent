@@ -10,9 +10,126 @@ import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
-import charger_lg from '../images/LG.jpeg';
 
-import axios from 'react';
+import axios from 'axios';
+
+
+function Apply() {
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [itemId, setItemId] = useState(1);
+    const [isSelected, setIsSelected] = useState(false);
+    const [itemInfo, setItemInfo] = useState({});
+    const [possible, setPossible] = useState(false);
+
+    const onClick_modal = () => {
+        setIsOpen(true);
+    }
+
+    const onSubmit_item = async () => {
+
+        const SEARCHURL = `http://27.96.131.106:8080/item/${itemId}`;
+
+        try {
+            console.log('itemId:', itemId);
+            const response = await axios.get(SEARCHURL);
+            console.log('get itemInfo succeeded!', response.data);
+            if (response.data) {
+                if (response.data.cnt == 0)
+                    setPossible(false);
+                else
+                    setPossible(true);
+                const tmp = {
+                    ...response.data,
+                    id:itemId,
+                }
+                console.log('tmp :',tmp);
+                setItemInfo(tmp);
+            }
+        } catch (error) {
+            console.log('get itemInfo failed ;(', error);
+        }
+    }
+
+    const onClick_apply = () => {
+        let result = window.confirm("해당 품목으로 대여를 신청하시겠습니까?")
+        if (result) {
+            sessionStorage.setItem('itemInfo', JSON.stringify(itemInfo));
+            window.location.href = '/apply_form';
+        }
+    }
+
+    useEffect(() => {
+        if(itemId)
+            onSubmit_item();
+    }, [itemId]);
+
+
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <SecondBox>
+                <Link to='/' style={{ textDecoration: 'none' }}>
+                    <BackPage>
+                        <Icon src={backpage}></Icon>
+                        이전 페이지
+                    </BackPage>
+                </Link>
+                <FlexBox_Row>
+                    <SearchBar>
+                        <img src={search}></img>
+                        <div onClick={onClick_modal}>대여품 검색</div>
+                    </SearchBar>
+                </FlexBox_Row>
+                <Line></Line>
+                {isOpen && <Modal_Apply
+                    setIsOpen={setIsOpen}
+                    setItemId={setItemId}
+                    setIsSelected={setIsSelected}
+                ></Modal_Apply>}
+                {isSelected ? <StuffInfo>
+                    <h1>
+                        •품명 : <span>{itemInfo.itemName}</span>
+                    </h1>
+                    <h1>
+                        •잔여수량 : <span>{itemInfo.cnt}</span>
+                    </h1>
+                    <h1>
+                        •이미지 :
+                    </h1>
+                    <FlexBox_Column>
+                        <Img_Stuff src={itemInfo.image}></Img_Stuff>
+                        {
+                            possible ? <Btn_Rent
+                                onClick={onClick_apply}
+                                bgColor='#D7556C'>
+                                대여하기
+                            </Btn_Rent>
+                                : <Btn_Rent
+                                    disabled='true'
+                                    bgColor='#A6A6A6'>
+                                    대여불가
+                                </Btn_Rent>
+                        }
+                    </FlexBox_Column>
+                </StuffInfo>
+                    : <Text_Blank>원하시는 대여품을 검색해주십시오</Text_Blank>}
+
+            </SecondBox>
+        </MainBox>
+    </Wrapper>
+}
+export default Apply;
+
 
 const FlexBox_Row = styled.div`
 display:flex;
@@ -296,112 +413,3 @@ line-height: 18px; /* 90% */
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Apply() {
-    const SEARCHURL = '/';
-
-    const [stuffCnt, setStuffCnt] = useState(3);
-    const [isOpen, setIsOpen] = useState(false);
-    const [item_apply, setItem_apply] = useState("");
-    const [isSelected, setIsSelected] = useState(false);
-    const [itemInfo,setItemInfo]=useState({});
-    const [possible,setPossible]=useState(false);
-
-    const onClick_modal = () => {
-        setIsOpen(true);
-    }
-
-    const onSubmit_item = async () => {
-        const item = item_apply;
-        try {
-            const response = await axios.get(SEARCHURL, { params: { item } });
-            console.log('get itemInfo succeeded!');
-            if(response.data.cnt==0)
-                setPossible(false);
-            else
-                setPossible(true);
-            setItemInfo(response.data);
-            setIsSelected(true);
-        } catch (error) {
-            console.log('get itemInfo failed ;(', error);
-        }
-    }
-
-    const onClick_apply=()=>{
-        let result = window.confirm("해당 품목으로 대여를 신청하시겠습니까?")
-        if(result){
-            sessionStorage.setItem('itemInfo',JSON.stringify(itemInfo));
-            window.location.href='/apply_form';
-        }
-    }
-
-    useEffect(()=>{
-        onSubmit_item();
-    },[item_apply]);
-
-
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <SecondBox>
-                <Link to='/' style={{ textDecoration: 'none' }}>
-                    <BackPage>
-                        <Icon src={backpage}></Icon>
-                        이전 페이지
-                    </BackPage>
-                </Link>
-                <FlexBox_Row>
-                    <SearchBar>
-                        <img src={search}></img>
-                        <div onClick={onClick_modal}>대여품 검색</div>
-                    </SearchBar>
-                </FlexBox_Row>
-                <Line></Line>
-                {isOpen && <Modal_Apply
-                    setIsOpen={setIsOpen}
-                    setItem_apply={setItem_apply}
-                    setIsSelected={setIsSelected}
-                ></Modal_Apply>}
-                {isSelected ? <StuffInfo>
-                    <h1>
-                        •품명 : <span>{item_apply}</span>
-                    </h1>
-                    <h1>
-                        •잔여수량 : <span>{stuffCnt}</span>
-                    </h1>
-                    <h1>
-                        •이미지 :
-                    </h1>
-                    <FlexBox_Column>
-                        <Img_Stuff src={charger_lg}></Img_Stuff>
-                        {
-                        possible ? <Btn_Rent 
-                            onClick={onClick_apply}
-                            bgColor='#D7556C'>
-                            대여하기
-                        </Btn_Rent>
-                        : <Btn_Rent 
-                            disabled='true'
-                            bgColor='#A6A6A6'>
-                            대여불가
-                        </Btn_Rent>
-                        }
-                    </FlexBox_Column>
-                </StuffInfo>
-                    : <Text_Blank>원하시는 대여품을 검색해주십시오</Text_Blank>}
-
-            </SecondBox>
-        </MainBox>
-    </Wrapper>
-}
-export default Apply;

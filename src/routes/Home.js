@@ -12,6 +12,49 @@ import map from '../images/🦆 icon _map.svg';
 import person from '../images/🦆 icon _person.svg';
 
 
+function Home() {
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <Link to='/apply' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <Icon src={book}></Icon>
+                    <p>대여 신청</p>
+                </BtnBig>
+            </Link>
+            <Link to='/check' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <Icon src={glass}></Icon>
+                    <p>대여내역 확인 및 수정</p>
+                </BtnBig>
+            </Link>
+            <Link to='/map' style={{ textDecoration: 'none' }}>
+                <BtnBig>
+                    <IconMap src={map}></IconMap>
+                    <p style={{ marginLeft: '-16px' }}>찾아오시는 길</p>
+                </BtnBig>
+            </Link>
+            <Link to='/login' style={{ textDecoration: 'none' }}>
+                <BtnSmall>
+                    <IconSmall src={person}></IconSmall>
+                    <p>학생회 로그인</p>
+                </BtnSmall>
+            </Link>
+        </MainBox>
+    </Wrapper>
+}
+export default Home;
+
+
 const FlexBox_Row = styled.div`
 display:flex;
 justify-content:center;
@@ -128,6 +171,7 @@ border-radius: 20px;
 background: #FF96A9;
 box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 border:0;
+color: #FFF;
 
 padding-left:28px;
 padding-right:28px;
@@ -137,8 +181,11 @@ align-items:center;
 cursor:pointer;
 
 &:hover{
-    border:4px solid rgb(256,200,200);
-    box-shadow:none;
+    background-color:rgb(256,180,180);
+}
+&:active{
+    box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background-color:rgb(256,180,180);
 }
 
 p{
@@ -147,7 +194,7 @@ padding:0;
 width: 179px;
 height: 26px;
 
-color: #FFF;
+
 text-align: center;
 font-size: 20px;
 font-style: normal;
@@ -179,10 +226,12 @@ justify-content:center;
 align-items:center;
 
 &:hover{
-    border:4px solid rgb(256,200,200);
-    box-shadow:none;
+    background-color:rgb(256,180,180);
 }
-
+&:active{
+    box-shadow: inset 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    background-color:rgb(256,180,180);
+}
 p{
     display: flex;
 width: 102.083px;
@@ -224,46 +273,3 @@ margin-right:-12px;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Home() {
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <Link to='/apply' style={{ textDecoration: 'none' }}>
-                <BtnBig>
-                    <Icon src={book}></Icon>
-                    <p>대여 신청</p>
-                </BtnBig>
-            </Link>
-            <Link to='/map' style={{ textDecoration: 'none' }}>
-                <BtnBig>
-                    <IconMap src={map}></IconMap>
-                    <p style={{ marginLeft: '-16px' }}>찾아오시는 길</p>
-                </BtnBig>
-            </Link>
-            <Link to='/check' style={{ textDecoration: 'none' }}>
-                <BtnBig>
-                    <Icon src={glass}></Icon>
-                    <p>대여내역 확인 및 수정</p>
-                </BtnBig>
-            </Link>
-            <Link to='/login' style={{ textDecoration: 'none' }}>
-                <BtnSmall>
-                    <IconSmall src={person}></IconSmall>
-                    <p>학생회 로그인</p>
-                </BtnSmall>
-            </Link>
-        </MainBox>
-    </Wrapper>
-}
-export default Home;

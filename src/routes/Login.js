@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 
+import { ID_AUTH, PASSWORD_AUTH } from '../componentes/ID_PSWD_AUTH';
+
 import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
@@ -7,6 +9,77 @@ import styled from 'styled-components';
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
+
+
+function Login() {
+
+    const [formValues, setFormValues] = useState({});
+    const onChange = (event) => {
+        event.preventDefault();
+        const {name, value} = event.target;
+        setFormValues((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+    const onClick_auth = () => {
+        console.log(formValues.id,formValues.password)
+        if (formValues.id === ID_AUTH &&
+            formValues.password === PASSWORD_AUTH){
+
+            const authInfo = {
+                id : ID_AUTH,
+                password : PASSWORD_AUTH,
+            }
+            sessionStorage.setItem('authInfo',JSON.stringify(authInfo));
+            window.location.href = '/auth_home';
+        }
+        else
+            alert("올바른 아이디 또는 비밀번호를 입력해주십시오!");
+    }
+
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <Link to='/' style={{
+                textDecoration: 'none',
+                alignSelf: 'flex-start',
+                marginLeft: '-12px'
+            }}>
+                <BackPage>
+                    <Icon src={backpage}></Icon>
+                    이전 페이지
+                </BackPage>
+            </Link>
+            <InputDiv>
+                <p>ID(학번)</p>
+                <input type='number'
+                    name='id'
+                    onChange={onChange}
+                    placeholder='ID (학번)'></input>
+            </InputDiv>
+            <InputDiv>
+                <p>비밀번호</p>
+                <input 
+                type='password'
+                name='password'
+                onChange={onChange}
+                placeholder='비밀번호 입력'></input>
+            </InputDiv>
+            <Btn_login onClick={onClick_auth}>로그인 하기</Btn_login>
+        </MainBox>
+    </Wrapper>
+}
+export default Login;
 
 
 
@@ -218,45 +291,3 @@ align-items:center;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Login() {
-    const onClick_auth=()=>{
-        window.location.href='/auth_home';
-    }
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/' style={{textDecoration:'none'}}>
-        <Banner>
-            <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-            <FlexBox_Row>
-                <Forever></Forever>
-                <Rent>세종대여</Rent>
-            </FlexBox_Row>
-        </Banner>
-        </Link>
-        <MainBox>
-            <Link to='/' style={{
-                textDecoration: 'none',
-                alignSelf: 'flex-start',
-                marginLeft: '-12px'
-            }}>
-                <BackPage>
-                    <Icon src={backpage}></Icon>
-                    이전 페이지
-                </BackPage>
-            </Link>
-            <InputDiv>
-                <p>ID(학번)</p>
-                <input type='number'
-                placeholder='ID (학번)'></input>
-            </InputDiv>
-            <InputDiv>
-                <p>비밀번호</p>
-                <input placeholder = '비밀번호 입력'></input>
-            </InputDiv>
-            <Btn_login onClick={onClick_auth}>로그인 하기</Btn_login>
-        </MainBox>
-    </Wrapper>
-}
-export default Login;

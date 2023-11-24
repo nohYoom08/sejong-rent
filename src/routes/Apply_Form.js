@@ -10,8 +10,244 @@ import backpage from '../images/🦆 icon _arrow back.svg';
 import checked from '../images/checked.svg';
 import unchecked from '../images/unchecked.svg';
 
-import axios from 'react';
+import axios from 'axios';
 
+
+function Apply_Form() {
+    
+
+    const [numList, setNumList] = useState([]);
+    const [studentNoCard_check, setstudentNoCard_check] = useState(false);
+    const [bill_check, setBill_check] = useState(false);
+    const [all_check, setAll_Check] = useState(false);
+    const [studentNoCard_checkImg, setstudentNoCard_checkImg] = useState(unchecked);
+    const [bill_checkImg, setBill_checkImg] = useState(unchecked);
+    const [submitPossible, setSubmitPossible] = useState(false);
+    const [itemInfo, setItemInfo] = useState(4);
+
+    const [formValues, setFormValues] = useState({
+        studentNo:'',
+        cnt: '1',
+        name: '',
+        password: ''
+    })
+
+    const onChange = (event) => {
+        event.preventDefault();
+        const { name, value } = event.target;
+        setFormValues((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+
+    const onClick_studentNoCheck = () => {
+        if (studentNoCard_check) {
+            setstudentNoCard_check(false);
+            setstudentNoCard_checkImg(unchecked);
+        } else {
+            setstudentNoCard_check(true);
+            setstudentNoCard_checkImg(checked);
+        }
+    }
+    const onClick_billCheck = () => {
+        if (bill_check) {
+            setBill_check(false);
+            setBill_checkImg(unchecked);
+        } else {
+            setBill_check(true);
+            setBill_checkImg(checked);
+        }
+    }
+    const onSubmit = async (event) => {
+        event.preventDefault();
+        
+        const itemId = Number(itemInfo.id);
+        const studentNo = formValues.studentNo;
+        const cnt = formValues.cnt;
+        const name = formValues.name;
+        const password = formValues.password;
+
+        const APPLYURL = `http://27.96.131.106:8080/item/${itemId}`;
+        // const date = new Date();
+        // const year = date.getFullYear().toString().padStart(4, '0');
+        // const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        // const day = date.getDay().toString().padStart(2, '0');
+        // const dateApply = `${year}-${month}-${day}`;
+
+        console.log('will be posted:',
+        itemId,itemInfo.itemName,name, password, studentNo, cnt );
+        try {
+            const response = await axios.post(APPLYURL, {
+                name, password, studentNo, cnt
+            })
+            if (response.data) {
+                alert("신청이 성공적으로 완료되었습니다!");
+                console.log('succeded', response.data);
+                sessionStorage.clear();
+                window.location.href = '/apply';
+            }
+            console.log('post failed ;(');
+        } catch (error) {
+            console.log('post failed error', error);
+        }
+    }
+
+    
+
+    useEffect(() => {
+        const storedItemInfo = JSON.parse(sessionStorage.getItem('itemInfo'));
+        console.log('storedItemInfo', storedItemInfo);
+        setItemInfo(storedItemInfo);
+    }, [])
+    useEffect(()=>{
+        if (numList.length == 0)
+            for (let i = 0; i < itemInfo.cnt; i++)
+            numList.push(i + 1);
+    },[itemInfo])
+    useEffect(() => {
+        if (studentNoCard_check && bill_check) {
+            setAll_Check(true);
+        } else {
+            setAll_Check(false);
+        }
+    }, [studentNoCard_check, bill_check])
+
+    useEffect(() => {
+        console.log(formValues);
+        const allInputFilled =
+            Object.values(formValues).every((value) => (value !== ""));
+        //every는 모든 원소가 화살표함수를 만족하는지에 따른 true or false 반환
+
+        console.log('all_check', all_check);
+        console.log('allInputFilled', allInputFilled);
+        if (all_check && allInputFilled)
+            setSubmitPossible(true);
+        else
+            setSubmitPossible(false);
+    }, [all_check, Object.values(formValues)])
+
+
+    useEffect(()=>{
+        console.log('formValues check! : ',formValues);
+    },[formValues])
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <FormBox onSubmit={onSubmit}>
+                <Link to='/apply' style={{
+                    textDecoration: 'none',
+                    alignSelf: 'flex-start'
+                }}>
+                    <BackPage>
+                        <Icon src={backpage}></Icon>
+                        이전 페이지
+                    </BackPage>
+                </Link>
+                <InputDiv>
+                    <p>대여품명</p>
+                    <input style={{
+                        width: '280px',
+                        height: '32px'
+                    }}
+                        name='item'
+                        value={itemInfo.itemName}
+                        disabled={true}
+                    >
+                    </input>
+                </InputDiv>
+                <FlexBox_Row>
+                    <InputDiv>
+                        <p>학번</p>
+                        <input style={{
+                            width: '180px',
+                            height: '32px',
+                            marginRight: '20px'
+                        }}
+                            type='number'
+                            name='studentNo'
+                            value={formValues.studentNo}
+                            onChange={onChange}
+                        ></input>
+                    </InputDiv>
+                    <InputDiv>
+                        <p>대여수량</p>
+                        <select style={{
+                            width: '80px',
+                            height: '36px'
+                        }}
+                            name='cnt'
+                            value={formValues.cnt}
+                            onChange={onChange}
+                        >
+                            {numList.map((item, key) => {
+                                return <option key={key} value={item}>
+                                    {item}
+                                </option>
+                            })}
+                        </select>
+                    </InputDiv>
+                </FlexBox_Row>
+                <FlexBox_Row>
+                    <InputDiv>
+                        <p>이름</p>
+                        <input style={{
+                            width: '100px',
+                            height: '32px',
+                            marginRight: '20px'
+                        }}
+                            name='name'
+                            value={formValues.name}
+                            onChange={onChange}
+                        ></input>
+                    </InputDiv>
+                    <InputDiv>
+                        <p>비밀번호</p>
+                        <input style={{
+                            width: '140px',
+                            height: '32px'
+                        }}
+                            type='password'
+                            name='password'
+                            value={formValues.password}
+                            onChange={onChange}
+                        ></input>
+                    </InputDiv>
+                </FlexBox_Row>
+
+                <Agreement style={{ marginBottom: '-8px' }}>
+                    <p>대여물품을 받아가실 때 학생회실에서
+                        <br></br>
+                        <Underline>학생증과 신분증</Underline>을 꼭 제시해주셔야 합니다.
+                    </p>
+                    <img onClick={onClick_studentNoCheck} src={studentNoCard_checkImg}></img>
+                </Agreement>
+                <Agreement style={{ marginBottom: '24px' }}>
+                    <p>대여물품 <Underline>분실 및 훼손</Underline>시 소프트웨어융합대학 학생회
+                        <br></br>
+                        ‘영원' 측에서는 해당 이용자에게 <Underline>배상을 청구</Underline>할 수 있습니다.
+                    </p>
+                    <img onClick={onClick_billCheck} src={bill_checkImg}></img>
+                </Agreement>
+
+                {submitPossible ?
+                    <Btn_O type='submit'>대여 신청하기</Btn_O> :
+                    <Btn_X disabled={true}>대여 신청하기</Btn_X>}
+            </FormBox>
+        </MainBox>
+    </Wrapper>
+}
+export default Apply_Form;
 
 const FlexBox_Row = styled.div`
 display:flex;
@@ -294,220 +530,3 @@ text-decoration-line: underline;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Apply_Form() {
-    const APPLYURL = '/';
-
-    const [numList, setNumList] = useState([]);
-    const [idCard_check, setIdCard_check] = useState(false);
-    const [bill_check, setBill_check] = useState(false);
-    const [all_check, setAll_Check] = useState(false);
-    const [idCard_checkImg, setIdCard_checkImg] = useState(unchecked);
-    const [bill_checkImg, setBill_checkImg] = useState(unchecked);
-    const [submitPossible, setSubmitPossible] = useState(false);
-    const [itemInfo, setItemInfo] = useState(4);
-    // useEffect(()=>{
-    //     const storedItemInfo=sessionStorage.getItem(JSON.parse('itemInfo'));
-    //     setItemInfo(storedItemInfo);
-    // },[])
-    const [formValues, setFormValues] = useState({
-        item: 'not yet',//itemInfo.name,
-        id: '',
-        cntApply: '1',
-        name: '',
-        password: ''
-    })
-
-    const onChange = (event) => {
-        event.preventDefault();
-        const { name, value } = event.target;
-        setFormValues((prev) => ({
-            ...prev,
-            [name]: value
-        }))
-    }
-
-
-    const onClick_idCheck = () => {
-        if (idCard_check) {
-            setIdCard_check(false);
-            setIdCard_checkImg(unchecked);
-        } else {
-            setIdCard_check(true);
-            setIdCard_checkImg(checked);
-        }
-    }
-    const onClick_billCheck = () => {
-        if (bill_check) {
-            setBill_check(false);
-            setBill_checkImg(unchecked);
-        } else {
-            setBill_check(true);
-            setBill_checkImg(checked);
-        }
-    }
-    const onSubmit = async (event) => {
-        event.preventDefault();
-        const item = formValues.item;
-        const id = formValues.id;
-        const cntApply = formValues.cntApply;
-        const name = formValues.name;
-        const password = formValues.password;
-        console.log('will be posted:', item, id, cntApply, name, password);
-        try {
-            const response = await axios.post(APPLYURL, {
-                item, id, cntApply, name, password
-            })
-            alert("신청이 성공적으로 완료되었습니다!");
-            console.log('succeded',response);
-            window.location.href = '/apply';
-        } catch (error) {
-            console.log('post failed ;(', error);
-        }
-    }
-
-
-    if(numList.length==0)
-        for (let i = 0; i < 5; i++)
-            numList.push(i + 1);
-
-
-    useEffect(() => {
-        if (idCard_check && bill_check) {
-            setAll_Check(true);
-        } else {
-            setAll_Check(false);
-        }
-    }, [idCard_check, bill_check])
-
-    useEffect(() => {
-        console.log(formValues);
-        const allInputFilled =
-            Object.values(formValues).every((value) => (value !== ""));
-        //every는 모든 원소가 화살표함수를 만족하는지에 따른 true or false 반환
-        
-        console.log('all_check',all_check);
-        console.log('allInputFilled',allInputFilled);
-        if (all_check && allInputFilled)
-            setSubmitPossible(true);
-        else
-            setSubmitPossible(false);
-    }, [all_check, Object.values(formValues)])
-
-
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <FormBox onSubmit={onSubmit}>
-                <Link to='/apply' style={{
-                    textDecoration: 'none',
-                    alignSelf: 'flex-start'
-                }}>
-                    <BackPage>
-                        <Icon src={backpage}></Icon>
-                        이전 페이지
-                    </BackPage>
-                </Link>
-                <InputDiv>
-                    <p>대여품명</p>
-                    <input style={{
-                        width: '280px',
-                        height: '32px'
-                    }}
-                    name='item'
-                    value={formValues.item}
-                    disabled={true}
-                    >
-                    </input>
-                </InputDiv>
-                <FlexBox_Row>
-                    <InputDiv>
-                        <p>학번</p>
-                        <input style={{
-                            width: '180px',
-                            height: '32px',
-                            marginRight: '20px'
-                        }}
-                        type='number'
-                        name='id'
-                        value={formValues.id}
-                        onChange={onChange}
-                        ></input>
-                    </InputDiv>
-                    <InputDiv>
-                        <p>대여수량</p>
-                        <select style={{
-                            width: '80px',
-                            height: '36px'
-                        }}
-                        name='cntApply'
-                        value={formValues.cntApply}
-                        onChange={onChange}
-                        >
-                            {numList.map((item,key)=>{
-                                return <option key={key} value = {item}>
-                                    {item}
-                                </option>    
-                            })}
-                        </select>
-                    </InputDiv>
-                </FlexBox_Row>
-                <FlexBox_Row>
-                    <InputDiv>
-                        <p>이름</p>
-                        <input style={{
-                            width: '100px',
-                            height: '32px',
-                            marginRight: '20px'
-                        }}
-                        name='name'
-                        value={formValues.name}
-                        onChange={onChange}
-                        ></input>
-                    </InputDiv>
-                    <InputDiv>
-                        <p>비밀번호</p>
-                        <input style={{
-                            width: '140px',
-                            height: '32px'
-                        }}
-                        name='password'
-                        value={formValues.password}
-                        onChange={onChange}
-                        ></input>
-                    </InputDiv>
-                </FlexBox_Row>
-
-                <Agreement style={{ marginBottom: '-8px' }}>
-                    <p>대여물품을 받아가실 때 학생회실에서
-                        <br></br>
-                        <Underline>학생증과 신분증</Underline>을 꼭 제시해주셔야 합니다.
-                    </p>
-                    <img onClick={onClick_idCheck} src={idCard_checkImg}></img>
-                </Agreement>
-                <Agreement style={{ marginBottom: '24px' }}>
-                    <p>대여물품 <Underline>분실 및 훼손</Underline>시 소프트웨어융합대학 학생회
-                        <br></br>
-                        ‘영원' 측에서는 해당 이용자에게 <Underline>배상을 청구</Underline>할 수 있습니다.
-                    </p>
-                    <img onClick={onClick_billCheck} src={bill_checkImg}></img>
-                </Agreement>
-
-                {submitPossible ?
-                    <Btn_O type='submit'>대여 신청하기</Btn_O> :
-                    <Btn_X disabled={true}>대여 신청하기</Btn_X>}
-            </FormBox>
-        </MainBox>
-    </Wrapper>
-}
-export default Apply_Form;

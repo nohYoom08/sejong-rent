@@ -12,6 +12,186 @@ import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
 import charger_lenova from '../images/Lenova.jpg';
 
+import axios from 'react';
+
+function Check() {
+    const SEARCHURL = 'http://27.96.131.106:8080/rentals';
+    const DELETEURL = '/';
+    const REVISEURL = '/';
+
+    const [stuffCnt,setStuffCnt]=useState(0);
+    const [isOpen, setIsOpen] = useState(false);
+    const [isSearched,setIsSearched]=useState(false);
+    const [dataList,setDataList]=useState([]);
+    const [formValues,setFormValues]= useState({
+        id:"",
+        password:"",
+    })
+
+    const onChange=(event)=>{
+        event.preventDefault();
+        const {name,value}=event.target;
+        setFormValues((prev)=>({
+            ...prev,
+            [name]:value
+        }))
+    }
+
+    const onClick_searched = async() =>{
+        setIsSearched(true);
+
+        const id = formValues.id;
+        const password=formValues.password;
+        try{
+            console.log('id,password : ',id,password);
+            const response = await axios.post(SEARCHURL,
+            {id,password});
+            if(response.data){
+                console.log('searchData succeed!',response.data);
+                setDataList(response.data);
+            }
+        }catch(error){
+            console.log('seraching failed ;(',error);
+        }
+    }
+    const onClick_cancle = async()=>{
+        try{
+            const response = await axios.delete(DELETEURL);
+            if(response.data){
+                console.log('delete success!',response.data);
+                onClick_searched();
+            }
+        }catch(error){
+            console.log('delete failed ;(',error);
+        }
+    }
+    const onClick_revise = async(event)=>{  //뺄지 말지 고민
+        const id = event.target.value;
+        const result1 = window.prompt("원하는 대여 수량을 작성해주십시오");
+        if(result1){
+            const result2 = window.confirm("대여 수량을 변경하시겠습니까?");
+            if(result2){
+                const cnt = result1;
+                try{
+                    console.log('id,cnt : ',id,cnt);
+                    const response = await axios.put(REVISEURL,{id,cnt});
+                    if(response.data){
+                        console.log('revise success!',response.data);
+                        alert("대여수량을 성공적으로 수정하였습니다!");
+                    }
+                }catch(error){
+                    console.log('revise failed',error);
+                }
+            }
+        }
+    }
+
+    useEffect(()=>{setIsSearched(true)},[dataList]);
+    return <Wrapper>
+        <Sejong></Sejong>
+        <Link to='/' style={{ textDecoration: 'none' }}>
+            <Banner>
+                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
+                <FlexBox_Row>
+                    <Forever></Forever>
+                    <Rent>세종대여</Rent>
+                </FlexBox_Row>
+            </Banner>
+        </Link>
+        <MainBox>
+            <SecondBox>
+                <Link to='/' style={{
+                    textDecoration: 'none',
+                    alignSelf: 'flex-start'
+                }}>
+                    <BackPage>
+                        <Icon src={backpage}></Icon>
+                        이전 페이지
+                    </BackPage>
+                </Link>
+                <FlexBox_Row>
+                    <SearchBar>
+                        <img src={search}></img>
+                        <input 
+                        onChange={onChange}
+                        placeholder='학번 입력'
+                        name='id'/>
+                    </SearchBar>
+                    <SearchBar>
+                        <img src={search}></img>
+                        <input 
+                        onChange={onChange}
+                        type='password' 
+                        name = 'password'
+                        placeholder='비밀번호 입력'/>
+                    </SearchBar>
+                    <SearchBtn onClick={onClick_searched}>검색</SearchBtn>
+                </FlexBox_Row>
+                <Line></Line>
+                {isOpen && <Modal_Apply isOpen={isOpen} setIsOpen={setIsOpen}></Modal_Apply>}
+                {isSearched ? <TableBox>
+                    <Table>
+                        <thead>
+                            <tr>
+                                <th>품명</th>
+                                <th>이미지</th>
+                                <th>대여<br></br>수량</th>
+                                <th>상태</th>
+                                <th>비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>(레노버)<br></br>노트북 충전기</td>
+                                <td><img src={charger_lenova}></img></td>
+                                <td>{stuffCnt}</td>
+                                <td>신청중</td>
+                                <td>
+                                    <Btn_Rent 
+                                    onClick={onClick_cancle}
+                                    bgColor='#D7556C'>
+                                        대여신청<br></br>취소하기
+                                    </Btn_Rent>
+                                    <Btn_Rent 
+                                    onClick={onClick_revise}
+                                    bgColor='#333394'>
+                                        대여수량<br></br>수정하기
+                                    </Btn_Rent>
+                                </td>
+                            </tr>
+                            {dataList.map((item, key)=><tr key={key}>
+                                <td>{item.name}</td>
+                                <td><img src={item.image}></img></td>
+                                <td>{item.cnt}</td>
+                                <td>{item.statement}</td>
+                                <td>
+                                    <Btn_Rent 
+                                    onClick={onClick_cancle}
+                                    value = {item.id} 
+                                    bgColor='#D7556C'>
+                                        대여신청<br></br>취소하기
+                                    </Btn_Rent>
+                                    <Btn_Rent 
+                                    onClick={onClick_revise}
+                                    value = {item.id} 
+                                    bgColor='#333394'>
+                                        대여수량<br></br>수정하기
+                                    </Btn_Rent>
+                                </td>
+                            </tr>)}
+                        </tbody>
+                    </Table>
+                </TableBox>
+                : <Text_Blank>
+                    확인 및 수정을 원하시는 대여내역의 학번과 비밀번호를 입력해주세요
+                </Text_Blank>}
+            </SecondBox>
+        </MainBox>
+    </Wrapper>
+}
+export default Check;
+
+
 
 const FlexBox_Row = styled.div`
 display:flex;
@@ -198,7 +378,7 @@ flex-shrink: 0;
 
 input{
 width: 80px;
-height: 20px;
+height: 18px;
 color: #A6A6A6;
 text-align: center;
 font-size: 12px;
@@ -343,85 +523,3 @@ cursor:pointer;
 //MainBox 끝//
 //MainBox 끝//
 //MainBox 끝//
-
-
-function Check() {
-    const [stuffCnt,setStuffCnt]=useState(0);
-    const [isOpen, setIsOpen] = useState(false);
-    const [isSearched,setIsSearched]=useState(false);
-
-    const onClick_searched = () =>{
-        setIsSearched(true);
-    }
-    return <Wrapper>
-        <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
-        <MainBox>
-            <SecondBox>
-                <Link to='/' style={{
-                    textDecoration: 'none',
-                    alignSelf: 'flex-start'
-                }}>
-                    <BackPage>
-                        <Icon src={backpage}></Icon>
-                        이전 페이지
-                    </BackPage>
-                </Link>
-                <FlexBox_Row>
-                    <SearchBar>
-                        <img src={search}></img>
-                        <input placeholder='학번 입력'></input>
-                    </SearchBar>
-                    <SearchBar>
-                        <img src={search}></img>
-                        <input type='password' placeholder='비밀번호 입력'></input>
-                    </SearchBar>
-                    <SearchBtn onClick={onClick_searched}>검색</SearchBtn>
-                </FlexBox_Row>
-                <Line></Line>
-                {isOpen && <Modal_Apply isOpen={isOpen} setIsOpen={setIsOpen}></Modal_Apply>}
-                {isSearched ? <TableBox>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <th>품명</th>
-                                <th>이미지</th>
-                                <th>대여<br></br>수량</th>
-                                <th>상태</th>
-                                <th>비고</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>(레노버)<br></br>노트북 충전기</td>
-                                <td><img src={charger_lenova}></img></td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#D7556C'>
-                                        대여신청<br></br>취소하기
-                                    </Btn_Rent>
-                                    <Btn_Rent bgColor='#333394'>
-                                        대여수량<br></br>수정하기
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </Table>
-                </TableBox>
-                : <Text_Blank>
-                    확인 및 수정을 원하시는 대여내역의 학번과 비밀번호를 입력해주세요
-                </Text_Blank>}
-            </SecondBox>
-        </MainBox>
-    </Wrapper>
-}
-export default Check;

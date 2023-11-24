@@ -4,6 +4,123 @@ import styled from 'styled-components';
 
 import close from '../images/🦆 icon _close.svg';
 
+import axios from 'axios';
+
+import ImageUpload from './ImageUpload';
+
+
+
+function Modal_Add({ setIsOpenAdd }) {
+
+    const ADDURL = 'http://27.96.131.106:8080/admin/item';
+
+    const [imageName,setImageName]=useState("");
+    const [imageUrlUpload,setImageUrlUpload]=useState("");
+    const [formValues, setFormValues] = useState({
+        itemName: '',
+        cnt: '',
+    })
+
+
+    const onChange = (event) => {
+        event.preventDefault();
+        const { name, value } = event.target;
+        setFormValues((prev) => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const onClick_close = () => {
+        setIsOpenAdd(false);
+    }
+    
+    const onClick_add = async () => {
+        let result = window.confirm("작성하신 내용으로 해당 품목을 추가하시겠습니까?")
+        if (result) {
+            const itemName = formValues.itemName;
+            const cnt = formValues.cnt;
+            const image = imageUrlUpload;
+            console.log('itemName,cnt,image:',
+                itemName, cnt, image);
+
+            try {
+                const response = await axios.post(ADDURL,
+                    { itemName, cnt, image });
+                console.log('response',response);
+                if (response.data === "등록완료") {
+                    alert("대여품이 추가되었습니다");
+                    setIsOpenAdd(false);
+                    console.log('add success!');
+                } else {
+                    console.log('add failed ;(');
+                }
+            } catch (error) {
+                console.log('add error ;(', error);
+            }
+        }
+    }
+
+    useEffect(()=>{
+        console.log('data checked - named, cnt, imageName, imageUrlUpload : ',
+        formValues.itemName,
+        formValues.cnt,
+        imageName,
+        imageUrlUpload)
+    },[formValues,imageName,imageUrlUpload])
+    
+    return <AddModal>
+        <Btn_X src={close} onClick={onClick_close}></Btn_X>
+        <InputDiv>
+            <p>대여품명</p>
+            <input style={{
+                width: '280px',
+                height: '32px'
+            }}
+                name='itemName'
+                onChange={onChange}
+                placeholder='새로 추가할 대여품의 이름을 입력해주십시오'>
+            </input>
+        </InputDiv>
+        <FlexBox_Row style={{ width: '280px' }}>
+            <InputDiv>
+                <p>총 수량</p>
+                <input style={{
+                    width: '60px',
+                    height: '32px',
+                    marginRight: '20px'
+                }}
+                    name='cnt'
+                    onChange={onChange}
+                    type='number'></input>
+            </InputDiv>
+            <InputDiv>
+                <FlexBox_Row style={{
+                    width: '192px',
+                    justifyContent: 'space-between',
+                }}>
+                    <p>이미지</p>
+                </FlexBox_Row>
+                <input style={{
+                    width: '180px',
+                    height: '32px'
+                }}
+                    value={imageName}
+                    disabled={true}
+                    placeholder='파일명'></input>
+            </InputDiv>
+        </FlexBox_Row>
+
+        <ImageUpload
+            setImageName={setImageName}
+            setImageUrlUpload={setImageUrlUpload}>
+        </ImageUpload>
+
+        <Btn_Add onClick={onClick_add}>추가하기</Btn_Add>
+    </AddModal>
+}
+export default Modal_Add;
+
 
 const FlexBox_Row = styled.div`
 
@@ -21,6 +138,8 @@ align-items:center;
 const AddModal = styled.div`
 position:absolute;
 width: 300px;
+top:10%;
+
 
 flex-shrink: 0;
 
@@ -36,7 +155,7 @@ align-items:center;
 
 padding:8px;
 padding-bottom:16px;
-`; 
+`;
 
 const InputDiv = styled.div`
 display:flex;
@@ -107,27 +226,9 @@ background: #BF3333;
 margin-bottom:8px;
 `;
 
-
-const AddImage = styled.button`
-width: 60px;
-height: 20px;
-flex-shrink: 0;
-
-border-radius: 8px;
-background: #9E93BC;
-border:none;
-margin-bottom:2px;
-cursor:pointer;
-
-color: #FFF;
-font-size: 12px;
-font-style: normal;
-font-weight: 400;
-`;
-
 const Btn_Add = styled.button`
-width: 80px;
-height: 30px;
+width: 120px;
+height: 40px;
 flex-shrink: 0;
 
 border:none;
@@ -137,69 +238,7 @@ cursor:pointer;
 
 color: #FFF;
 text-align: center;
-font-size: 12px;
+font-size: 20px;
 font-style: normal;
 font-weight: 500;
 `;
-
-function Modal_Add({ setIsOpenAdd }) {
-
-    const [stuffPages, setStuffPages] = useState([]);
-    const [sliced, setSliced] = useState(false);
-    const [pageNum, setPageNum] = useState([]);
-    const [currentPage, setCurrentPageNum] = useState(1);
-
-
-
-    const onClick_close = () => {
-        setIsOpenAdd(false);
-    }
-    const onClick_add=()=>{
-        let result = window.confirm("작성하신 내용으로 해당 품목을 추가하시겠습니까?")
-        if(result){
-            alert("대여품이 추가되었습니다");
-            setIsOpenAdd(false);
-        }
-    }
-
-    return <AddModal>
-        <Btn_X src={close} onClick={onClick_close}></Btn_X>
-        <InputDiv>
-            <p>대여품명</p>
-            <input style={{
-                width: '280px',
-                height: '32px'
-            }}
-                placeholder='새로 추가할 대여품의 이름을 입력해주십시오'>
-            </input>
-        </InputDiv>
-        <FlexBox_Row style={{width:'280px'}}>
-            <InputDiv>
-                <p>총 수량</p>
-                <input style={{
-                    width: '60px',
-                    height: '32px',
-                    marginRight: '20px'
-                }}
-                type='number'></input>
-            </InputDiv>
-            <InputDiv>
-                <FlexBox_Row style={{
-                    width:'192px',
-                    justifyContent:'space-between',
-                }}>
-                    <p>이미지</p>
-                    <AddImage>파일 추가</AddImage>
-                </FlexBox_Row>  
-                <input style={{
-                    width: '180px',
-                    height: '32px'
-                }}
-                    placeholder='파일명'></input>
-            </InputDiv>
-        </FlexBox_Row>
-
-        <Btn_Add onClick={onClick_add}>추가하기</Btn_Add>
-    </AddModal>
-}
-export default Modal_Add;
