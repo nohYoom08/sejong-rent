@@ -6,7 +6,7 @@ import axios from 'axios'
 
 
 function ImageUpload({ setImageName, setImageUrlUpload }) {
-    const [imageUrl, setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState();
     const [imgUp, setImgUp] = useState(false);
 
 
@@ -20,7 +20,8 @@ function ImageUpload({ setImageName, setImageUrlUpload }) {
         if (image_file) {
             setImageName(image_file.name);
             setImageUrl(URL.createObjectURL(image_file));
-
+            console.log('setImageUrl!',URL.createObjectURL(image_file));
+            
             const IMGURL = 'http://27.96.131.106:8080/bill/image'
             console.log('IMGURL', IMGURL);
             try {

@@ -18,7 +18,7 @@ function Modal_Add({ setIsOpenAdd }) {
     const [imageUrlUpload,setImageUrlUpload]=useState("");
     const [formValues, setFormValues] = useState({
         itemName: '',
-        cnt: '',
+        cnt: 1,
     })
 
 
@@ -39,7 +39,8 @@ function Modal_Add({ setIsOpenAdd }) {
         let result = window.confirm("작성하신 내용으로 해당 품목을 추가하시겠습니까?")
         if (result) {
             const itemName = formValues.itemName;
-            const cnt = formValues.cnt;
+            const cnt = formValues.cnt; 
+            //이 때 cnt는 잔여수량이 아니라 총 수량
             const image = imageUrlUpload;
             console.log('itemName,cnt,image:',
                 itemName, cnt, image);
@@ -90,6 +91,7 @@ function Modal_Add({ setIsOpenAdd }) {
                     height: '32px',
                     marginRight: '20px'
                 }}
+                    placeholder={formValues.cnt}
                     name='cnt'
                     onChange={onChange}
                     type='number'></input>

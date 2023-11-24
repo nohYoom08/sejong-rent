@@ -4,7 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_Apply from '../componentes/Modal_SearchStuff';
+import Modal_Apply from '../components/Modal_SearchStuff';
+import BannerBox from '../components/BannerBox';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
@@ -45,16 +46,19 @@ function User_Check() {
             const response = await axios.post(SEARCHURL,
             {studentNo,password});
             console.log('response',response);
-            if(response.data){
+            if(response.data.length!==0){
                 console.log('searchData succeed!',response.data);
                 setDataList(response.data);
+                setIsSearched(true);
             }else{
+                alert("해당 학번 및 비밀번호와 일치하는 신청내역이 없습니다!")
                 console.log('searching fail');
             }
         }catch(error){
             console.log('seraching error ;(',error);
         }
     }
+
 
     const onClick_cancle = async(event)=>{
         const result = window.confirm("해당 신청내역을 삭제하시겠습니까?");
@@ -101,6 +105,9 @@ function User_Check() {
                     if(response.data){
                         console.log('revise success!',response.data);
                         alert("대여수량을 성공적으로 수정하였습니다!");
+                    }else{
+                        alert(`대여수량 수정에 실패하였습니다.
+사유 : ${response.data}`)
                     }
                 }catch(error){
                     console.log('revise failed',error);
@@ -109,24 +116,20 @@ function User_Check() {
         }
     }
 
-    useEffect(()=>{setIsSearched(true)},[dataList]);
+    useEffect(()=>{
+        if(dataList.length !==0) 
+            setIsSearched(true)
+        else
+            setIsSearched(false);},[dataList]);
     useEffect(()=>{
         console.log('formValues check',formValues)},[formValues])
 
     return <Wrapper>
         <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
+        <BannerBox></BannerBox>
         <MainBox>
             <SecondBox>
-                <Link to='/' style={{
+                <Link to='/Sejong_Rent' style={{
                     textDecoration: 'none',
                     alignSelf: 'flex-start'
                 }}>
@@ -155,8 +158,6 @@ function User_Check() {
                 </FlexBox_Row>
 
                 <Line></Line>
-
-                {isOpen && <Modal_Apply isOpen={isOpen} setIsOpen={setIsOpen}></Modal_Apply>}
                 {isSearched ? <TableBox>
                     <Table>
                         <thead>
@@ -191,24 +192,6 @@ function User_Check() {
                                     </td>
                                 </tr>
                             ))}
-                            <tr>
-                                <td>(레노버)<br></br>노트북 충전기</td>
-                                <td><img src={charger_lenova}></img></td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent 
-                                    onClick={onClick_cancle}
-                                    bgColor='#D7556C'>
-                                        대여신청<br></br>취소하기
-                                    </Btn_Rent>
-                                    <Btn_Rent 
-                                    onClick={onClick_revise}
-                                    bgColor='#333394'>
-                                        대여수량<br></br>수정하기
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
                         </tbody>
                     </Table>
                 </TableBox>
@@ -269,48 +252,6 @@ background-size:contain;
 background-repeat:no-repeat;
 `;
 
-const Banner = styled.div`
-height:100%;
-margin-top:5%;
-
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-
-${FlexBox_Row}{
-    margin-bottom:-1vw;
-}
-`;
-const Explain = styled.p`
-    color: #2B0F7A;
-text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-font-size: 10px;
-font-style: normal;
-font-weight: 500;
-line-height: 16px; /* 160% */
-margin-bottom:-24px;
-
-`;
-const Forever = styled.div`
-width: 80px;
-height: 80px;
-flex-shrink: 0;
-background-image:url(${forever});
-background-size:contain;
-//div에 이미지 넣을때는 size필수
-border-radius:40px;
-box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-margin-right:8px;
-`;
-const Rent = styled.p`
-color: #C20F2F;
-text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-font-size: 40px;
-font-style: normal;
-font-weight: bold;
-line-height: 44px; /* 110% */
-`;
 
 //MainBox 시작//
 //MainBox 시작//

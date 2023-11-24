@@ -4,6 +4,8 @@ import { Link, useNavigate} from "react-router-dom";
 
 import styled from 'styled-components';
 
+import BannerBox from '../components/BannerBox';
+
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
@@ -60,7 +62,10 @@ function User_Apply_Form() {
             setBill_checkImg(checked);
         }
     }
+
+    let first_submit = true;
     const onSubmit = async (event) => {
+        if(first_submit){
         event.preventDefault();
 
         const result = window.confirm('작성해주신 정보로 대여신청을 하시겠습니까?');
@@ -85,6 +90,7 @@ function User_Apply_Form() {
                     name, password, studentNo, cnt
                 })
                 if (response.data) {
+                    first_submit = false;
                     alert("신청이 성공적으로 완료되었습니다!");
                     console.log('succeded', response.data);
                     sessionStorage.clear();
@@ -95,6 +101,7 @@ function User_Apply_Form() {
                 console.log('post failed error', error);
             }
         }
+    }
     }
 
 
@@ -137,15 +144,7 @@ function User_Apply_Form() {
     }, [formValues])
     return <Wrapper>
         <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
+        <BannerBox></BannerBox>
         <MainBox>
             <FormBox onSubmit={onSubmit}>
                 <Link to='/apply' style={{

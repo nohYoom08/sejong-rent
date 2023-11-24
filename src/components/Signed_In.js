@@ -1,4 +1,5 @@
 import { ID_AUTH, PASSWORD_AUTH } from './ID_PSWD_AUTH';
+import { useNavigate } from 'react-router-dom';
 
 function Signed_In() {
     const authInfo = JSON.parse(

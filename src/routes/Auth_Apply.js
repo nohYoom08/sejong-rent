@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Signed_In from '../componentes/Signed_In';
+import Signed_In from '../components/Signed_In';
 
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
@@ -30,17 +30,21 @@ function Apply() {
     const stuffCnt = 1;
     const [dataList, setDataList] = useState([]);
     const [fetched, setFetched] = useState(false);
-    const [upperDate,setUpperDate]=useState(false);
-    const [upperStatus,setUpperStatus]=useState(false);
-    const [dateText,setDateText]=useState(`신청일시
+    const [upperIdName, setUpperIdName]=useState(false);
+    const [upperDate, setUpperDate] = useState(false);
+    const [upperStatus, setUpperStatus] = useState(false);
+    const [idNameText, setIdNameText]=useState(`학번/이름
     ▼`)
-    const [statusText,setStatusText]=useState(`상태
+    const [dateText, setDateText] = useState(`신청일시
+    ▼`)
+    const [statusText, setStatusText] = useState(`상태
     ▼`)
 
     const fetchDataList = async () => {
         try {
             const response = await axios.get(FETCHURL);
-            if (response.data) {
+            console.log('response',response);
+            if (response.data.length!==0) {
                 console.log('fetch success!', response.data);
                 setDataList(response.data);
                 setFetched(true);
@@ -52,37 +56,54 @@ function Apply() {
         }
     }
 
-    const onClick_date=()=>{
-        if(upperDate){
-        dataList.sort((a,b)=>
-        a.date.localeCompare(b.date));
-        setUpperDate(false);
-        setDateText(`신청일시
+    const onClick_idName = () => {
+        if (upperIdName) {
+            dataList.sort((a, b) =>
+                a.name.localeCompare(b.name));
+            setUpperIdName(false);
+            setIdNameText(`학번/이름
         ▼`)
         }
-        else{
-            dataList.sort((a,b)=>
-        b.date.localeCompare(a.date));
-        setUpperDate(true);
-        setDateText(`신청일시
+        else {
+            dataList.sort((a, b) =>
+                b.name.localeCompare(a.name));
+            setUpperIdName(true);
+            setIdNameText(`학번/이름
+        ▲`)
+        }
+    }
+
+    const onClick_date = () => {
+        if (upperDate) {
+            dataList.sort((a, b) =>
+                a.date.localeCompare(b.date));
+            setUpperDate(false);
+            setDateText(`신청일시
+        ▼`)
+        }
+        else {
+            dataList.sort((a, b) =>
+                b.date.localeCompare(a.date));
+            setUpperDate(true);
+            setDateText(`신청일시
         ▲`)
         }
     }
 
 
-    const onClick_status=()=>{
-        if(upperStatus){
-        dataList.sort((a,b)=>
-        a.status.localeCompare(b.status));
-        setUpperStatus(false);
-        setStatusText(`상태
+    const onClick_status = () => {
+        if (upperStatus) {
+            dataList.sort((a, b) =>
+                a.status.localeCompare(b.status));
+            setUpperStatus(false);
+            setStatusText(`상태
         ▼`)
         }
-        else{
-            dataList.sort((a,b)=>
-        b.status.localeCompare(a.status));
-        setUpperStatus(true);
-        setStatusText(`상태
+        else {
+            dataList.sort((a, b) =>
+                b.status.localeCompare(a.status));
+            setUpperStatus(true);
+            setStatusText(`상태
         ▲`)
         }
     }
@@ -143,37 +164,55 @@ function Apply() {
         }
     }
 
-    const onClick_delete = async (event) => {
-        event.preventDefault();
-        const rentalId = event.target.value;
+    const onClick_delete = async (value, all) => {
+        const rentalId = value;
+        let result = false;
 
-        const result = window.confirm(
+        if(!all){
+        result = window.confirm(
             `대여신청 ID #${rentalId.toString().padStart(3, '0')}의 신청내역을 삭제하시겠습니까?`);
+        }
 
-        if (result) {
+        if (result || all) {
             console.log('rentalId will be axiosed', rentalId);
             try {
                 const DELETEURL =
-                    `http://27.96.131.106:8080/admin/rental/${rentalId}`
+                    `http://27.96.131.106:8080/admin/rental/past/${rentalId}`
                 const response = await axios.delete(DELETEURL);
 
                 console.log('response:', response);
                 if (response.data === "삭제 완료") {
                     console.log('delete success :', response.data);
-                    alert(`#${rentalId.toString().padStart(3, '0')}의 대여신청내역을 성공적으로 삭제하였습니다.`);
-                    fetchDataList();
+                    if(!all){
+                        alert(`#${rentalId.toString().padStart(3, '0')}의 대여신청내역을 성공적으로 삭제하였습니다.`);
+                        fetchDataList();
+                    }
                 } else {
-                    console.log('delte fail');
+                    console.log('delete fail');
                 }
             } catch (error) {
                 console.log('delete error', error)
             }
         }
     }
-    const onClick_search = async (event) => {
-        event.preventDefault();
 
-    };
+    const onClick_deleteAll = () => {
+        const result = window.confirm("반납완료된 신청내역들을 모두 삭제하시겠습니까?");
+        if (result){
+            for(let i = 0 ; i<dataList.length;i++){
+                if(dataList[i].status==="RETURN"){
+                    onClick_delete(dataList[i].rentalId, true);
+                }
+            };
+            fetchDataList();
+            alert("반납내역을 성공적으로 모두 삭제하였습니다!");
+        }
+    }
+
+    // const onClick_search = async (event) => {
+    //     event.preventDefault();
+
+    // };
 
     useEffect(() => { fetchDataList() }, []);
     return <Wrapper>
@@ -195,43 +234,51 @@ function Apply() {
                         이전 페이지
                     </BackPage>
                 </Link>
-                <FlexBox_Row style={{ marginBottom: '8px' }}>
+                {/* <FlexBox_Row style={{ marginBottom: '8px' }}>
                     <SearchBar>
                         <img src={search}></img>
                         <input placeholder='학번/이름 또는 품명 검색'></input>
                     </SearchBar>
                     <SearchBtn onClick={onClick_search}>검색</SearchBtn>
-                </FlexBox_Row>
-                <TableBox>
+                </FlexBox_Row> */}
+                {/* 검색기능 추후 추가 */}
+                <DeleteAll onClick={onClick_deleteAll}>
+                        반납완료 내역 전체삭제하기 🗑️
+                </DeleteAll>
+                <Line></Line>
+               <TableBox>
+               {fetched ? 
                     <Table>
                         <thead>
                             <tr>
-                                <th>학번/<br></br>이름</th>
+                                <th
+                                onClick={onClick_idName}
+                                >{idNameText}</th>
                                 <th>ID</th>
                                 <th onClick={onClick_date}>
                                     {dateText}</th>
                                 <th>품명</th>
-                                <th>잔여<br></br>수량</th>
+                                <th>대여<br></br>수량</th>
                                 <th onClick={onClick_status}>
                                     {statusText}</th>
                                 <th>비고</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {fetched && dataList.map((item, key) => (
+                            {dataList.map((item, key) => (
                                 <tr key={key}>
-                                    <td>{item.studentNo}<br></br>
+                                    <td>{item.studentNo}/<br></br>
                                         {item.name}</td>
                                     <td>#{item.rentalId.toString().padStart(3, '0')}</td>
                                     <td>{item.date.slice(0, 10).replace(/-/g, ".")}/<br></br>
-                                    {/* 문자열 내의 '-'을 모두 '.'으로 바꾸는 법 */}
+                                        {/* 문자열 내의 '-'을 모두 '.'으로 바꾸는 법 */}
                                         {item.date.slice(11, 19)}</td>
                                     <td>{item.itemName}</td>
                                     <td>{item.cnt}</td>
                                     <td>
                                         {
                                             (item.status === "WAIT") &&
-                                            <p>신청 대기</p>
+                                            <p>신청<br></br>대기</p>
                                         }
                                         {
                                             (item.status === "RENTAL") &&
@@ -239,12 +286,12 @@ function Apply() {
                                         }
                                         {
                                             (item.status === "RETURN") &&
-                                            <p>반납 완료</p>
+                                            <p>반납<br></br>완료</p>
                                         }
                                     </td>
                                     <td>
                                         {
-                                            (item.status === "WAIT") &&
+                                        (item.status === "WAIT") &&
                                             <Btn_Rent
                                                 onClick={onClick_accept}
                                                 value={item.rentalId}
@@ -262,7 +309,7 @@ function Apply() {
                                         }
                                         {(item.status === "RETURN") &&
                                             <Btn_Rent bgColor='#A6A6A6'
-                                                onClick={onClick_delete}
+                                                onClick={()=>{onClick_delete(item.rentalId,false)}}
                                                 value={item.rentalId}>
                                                 삭제하기
                                             </Btn_Rent>
@@ -271,50 +318,15 @@ function Apply() {
                                     </td>
                                 </tr>
                             ))}
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#D7556C'>
-                                        신청확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>신청중</td>
-                                <td>
-                                    <Btn_Rent
-                                        bgColor='#333394'>
-                                        반납확인
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>20011001/<br></br>김세종</td>
-                                <td>#201-01</td>
-                                <td>2023.11.04/<br></br>14:03:05</td>
-                                <td>충전기</td>
-                                <td>{stuffCnt}</td>
-                                <td>대여중</td>
-                                <td>
-                                    <Btn_Rent bgColor='#A6A6A6'>
-                                        삭제하기
-                                    </Btn_Rent>
-                                </td>
-                            </tr>
 
                         </tbody>
                     </Table>
+                    : <BlankText>
+                        대여신청내역이 없습니다!
+                </BlankText>
+                }
                 </TableBox>
+                
             </SecondBox>
         </MainBox>
     </Wrapper>
@@ -484,6 +496,43 @@ ${Icon}{
 }
 `;
 
+const DeleteAll = styled.div`
+position:absolute;
+top:20px;
+right:-4px;
+
+width:200px;
+height:30px;
+border-radius:8px;
+
+margin-top:8px;
+margin-left:8px;
+margin-bottom:16px;
+
+color: rgb(120,80,80);
+font-size: 10px;
+font-weight: 500;
+
+cursor:pointer;
+
+text-align:center;
+display: flex;
+justify-content: center;
+align-items:center;
+flex-shrink: 0;
+`;
+
+const Line = styled.div`
+align-self:center;
+
+width: 280px;
+height: 1px;
+background: #BF3333;
+
+margin-bottom:8px;
+`;
+
+
 const SearchBar = styled.div`
 width: 240px;
 height: 32px;
@@ -536,12 +585,30 @@ line-height: 18px; /* 150% */
 `;
 
 const TableBox = styled.div`
+width:100%;
 height:360px;
 overflow:auto;
 margin-bottom:16px;
 border:1px solid gray;
 border-radius:10px;
+
+display:flex;
+justify-content:center;
+align-items:flex-start;
 `;
+
+const BlankText = styled.p`
+align-self:center;
+
+border-radius:12px;
+color:rgb(180,180,180);
+font-size:16px;
+
+display:flex;
+justify-content:center;
+align-items:center;
+`;
+
 //테이블 스타일 적용
 const Table = styled.table`
 
@@ -566,6 +633,12 @@ thead{
     }
     th:first-child{
         width:10px;
+        &:hover{
+            background-color:rgb(250,200,200);
+        }
+        &:active{
+            background-color:rgb(250,200,200);
+        }
     }
     th:nth-child(2){
         width:10px;
@@ -586,7 +659,7 @@ thead{
         width:100px;
     }
     th:nth-child(6){
-        width:100px;
+        width:80px;
         &:hover{
             background-color:rgb(250,200,200);
         }
@@ -622,6 +695,8 @@ flex-shrink: 0;
 border:none;
 border-radius: 10px;
 background: ${(props) => props.bgColor};
+
+cursor:pointer;
 
 color: #FFF;
 text-align: center;

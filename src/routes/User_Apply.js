@@ -4,7 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_SearchStuff from '../componentes/Modal_SearchStuff';
+import Modal_SearchStuff from '../components/Modal_SearchStuff';
+
+import BannerBox from '../components/BannerBox';
 
 import sejong from '../images/sejong.png';
 import forever from '../images/forever.png';
@@ -70,18 +72,10 @@ function User_Apply() {
 
     return <Wrapper>
         <Sejong></Sejong>
-        <Link to='/' style={{ textDecoration: 'none' }}>
-            <Banner>
-                <Explain>세종대학교 소프트웨어융합대학 온라인 대여서비스</Explain>
-                <FlexBox_Row>
-                    <Forever></Forever>
-                    <Rent>세종대여</Rent>
-                </FlexBox_Row>
-            </Banner>
-        </Link>
+        <BannerBox></BannerBox>
         <MainBox>
             <SecondBox>
-                <Link to='/' style={{ textDecoration: 'none' }}>
+                <Link to='/Sejong_Rent' style={{ textDecoration: 'none' }}>
                     <BackPage>
                         <Icon src={backpage}></Icon>
                         이전 페이지

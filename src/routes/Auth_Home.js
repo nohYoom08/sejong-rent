@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Signed_In from '../componentes/Signed_In';
+import Signed_In from '../components/Signed_In';
 
 import forever from '../images/forever.png';
 import person from '../images/🦆 icon _person.svg';

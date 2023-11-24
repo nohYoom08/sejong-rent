@@ -4,10 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 import styled from 'styled-components';
 
-import Modal_SearchStuff from '../componentes/Modal_SearchStuff';
-import Modal_Add_Auth from '../componentes/Modal_Add_Auth';
-import Signed_In from '../componentes/Signed_In';
-import ImageRevise from '../componentes/ImageRevise';
+import Modal_SearchStuff from '../components/Modal_SearchStuff';
+import Modal_Add_Auth from '../components/Modal_Add_Auth';
+import Signed_In from '../components/Signed_In';
+import ImageRevise from '../components/ImageRevise';
 
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
@@ -38,9 +38,11 @@ function Auth_Stuff() {
     const [stuffCnt, setStuffCnt] = useState(3);
     const [isImage, setIsImage] = useState(false);
     const [imageName, setImageName] = useState("");
-    const [imageUrlUpload, setImageUrlUpload] = useState("");
+    const [imageUrlUpload2, setImageUrlUpload2] = useState("");
+    //'대여품 추가'의 'imageUrlUpload'와 구분하기 위함
     const [formValues,setFormValues] = useState({
         itemName:'',
+        total:'',
         cnt:'',
         image:'',
     })
@@ -48,8 +50,14 @@ function Auth_Stuff() {
     const onClick_modalSearch = () => {
         setIsOpen(true);
     }
+    const onClick_reset = () =>{
+        setIsSelected(false);
+    }
     const onClick_modalAdd = () => {
-        setIsOpenAdd(true);
+        if(isSelected)
+            alert("검색 초기화 후 대여품 추가가 가능합니다")
+        else
+            setIsOpenAdd(true);
     }
     const onChange = async(event) =>{
         event.preventDefault();
@@ -79,7 +87,7 @@ function Auth_Stuff() {
                 console.log('tmp :',tmp);
                 if(tmp.image.slice(0,6)==="https:"){
                     setIsImage(true);
-                    setImageUrlUpload(tmp.image)
+                    setImageUrlUpload2(tmp.image)
                 }
 
                 setItemInfo(tmp);
@@ -93,20 +101,24 @@ function Auth_Stuff() {
 
 
     const onClick_revise = async() => {
-        let result = window.confirm('해당 품목을 작성하신 내용으로 수정하시겠습니까?');
+        let result = 
+        window.confirm(
+            `해당 품목을 작성하신 내용으로 수정하시겠습니까?
+** 총 수량 변경 시 잔여수량 변경여부도 꼭 확인해주세요 **`);
         if (result) {
             const REVISEURL = `http://27.96.131.106:8080/admin/item/${itemId}`;
 
             const itemName = formValues.itemName;
+            const total=formValues.total;
             const cnt = formValues.cnt;
-            const image = imageUrlUpload;
+            const image = imageUrlUpload2;
 
             console.log('itemName,cnt,image will be posted :',
-            itemName, cnt, image)
+            itemName, total, cnt, image)
 
             try{
                 const response=await axios.patch(REVISEURL,
-                    {itemName,cnt,image});
+                    {itemName,total, cnt,image});
                 console.log('response',response);
                 if(response.data==="수정 완료"){
                     console.log('revise success!',response.data);
@@ -128,7 +140,7 @@ function Auth_Stuff() {
 
             const itemName = formValues.itemName;
             const cnt = formValues.cnt;
-            const image = imageUrlUpload;
+            const image = imageUrlUpload2;
 
             console.log('itemName,cnt,image will be posted :',
             itemName, cnt, image)
@@ -159,10 +171,11 @@ function Auth_Stuff() {
         setFormValues((prev)=>({
             ...prev,
             itemName:itemInfo.itemName,
+            total:itemInfo.total,
             cnt:itemInfo.cnt,
-            image:imageUrlUpload
+            image:imageUrlUpload2
         }))
-    },[itemInfo,imageUrlUpload])
+    },[itemInfo,imageUrlUpload2])
     useEffect(()=>{console.log(
         'formValue check!',formValues)},[formValues]);
     return <Wrapper>
@@ -188,15 +201,19 @@ function Auth_Stuff() {
                     </BackPage>
                 </Link>
                 <FlexBox_Row style={{
-                    width: '320px',
+                    width: '280px',
                     marginBottom: '8px',
-                    justifyContent: 'space-evenly'
+                    justifyContent: 'space-between'
                 }}>
                     <SearchBar>
                         <img src={search}></img>
                         <div onClick={onClick_modalSearch}>대여품 검색</div>
                     </SearchBar>
-                    <AddBtn onClick={onClick_modalAdd}>추가 +</AddBtn>
+                    <FlexBox_Row>
+                    <ResetBtn onClick={onClick_reset}>검색 초기화</ResetBtn>
+                        <AddBtn onClick={onClick_modalAdd}>추가 +</AddBtn>
+                    </FlexBox_Row>
+                   
 
                 </FlexBox_Row>
                 <Line></Line>
@@ -226,6 +243,18 @@ function Auth_Stuff() {
                             •총 수량
                         </h1>
                         <input type='number'
+                            placeholder={itemInfo.total}
+                            name = 'total'
+                            onChange={onChange}></input>
+                    </FlexBox_Row>
+                    <FlexBox_Row style={{
+                        width: '100%',
+                        justifyContent: 'space-between'
+                    }}>
+                        <h1>
+                            •잔여 수량
+                        </h1>
+                        <input type='number'
                             placeholder={itemInfo.cnt}
                             name = 'cnt'
                             onChange={onChange}></input>
@@ -238,12 +267,12 @@ function Auth_Stuff() {
                             •이미지
                         </h1>
                         {isImage ?
-                        <Img_Stuff src={imageUrlUpload}></Img_Stuff>
+                        <Img_Stuff src={imageUrlUpload2}></Img_Stuff>
                         :<Img_Stuff_None>이미지 없음</Img_Stuff_None>
                     }
                         <ImageRevise
                             setImageName={setImageName}
-                            setImageUrlUpload={setImageUrlUpload}>
+                            setImageUrlUpload={setImageUrlUpload2}>
                         </ImageRevise>
                     </FlexBox_Column>
                     <FlexBox_Row style={{ alignSelf: 'center' }}>
@@ -258,6 +287,7 @@ function Auth_Stuff() {
                             삭제하기
                         </Btn_Manage>
                     </FlexBox_Row>
+                    <h2>* 총 수량 변경 시 잔여수량 변경여부도 꼭 확인해주세요 *</h2>
                 </StuffInfo>
                     : <Text_Blank>
                         수정 및 삭제를 원하시는 <br></br>대여품을 검색해주십시오
@@ -468,18 +498,19 @@ const Img_Stuff_None = styled.div`
 `;
 
 const SearchBar = styled.div`
-width: 180px;
+width: 136px;
 height: 32px;
 flex-shrink: 0;
 
 border-radius: 10px;
 border: 1px solid #FF6A7F;
 background: #FFF;
-margin-right:4px;
+margin-right:8px;
 
 display:flex;
 justify-content:center;
 align-items:center;
+padding-left:4px;
 
 img{
     width: 20px;
@@ -502,14 +533,36 @@ align-items:center;
 `;
 
 const AddBtn = styled.button`
+align-self: flex-end;
+
 width: 54px;
 height: 25px;
 flex-shrink: 0;
 
 border-radius: 10px;
-background: #9E93BC;
+background: rgb(235,150,150);
 border:none;
 cursor:pointer;
+
+color: #FFF;
+text-align: center;
+font-size: 12px;
+font-style: normal;
+font-weight: 400;
+line-height: 18px; /* 150% */
+`;
+
+const ResetBtn = styled.button`
+
+width: 72px;
+height: 25px;
+flex-shrink: 0;
+
+border-radius: 10px;
+background: rgb(235,150,150);
+border:none;
+cursor:pointer;
+margin-right:4px;
 
 color: #FFF;
 text-align: center;
@@ -530,6 +583,17 @@ h1{
     color: #BF3333;
     text-align: center;
     font-size: 16px;
+    font-style: normal;
+    font-weight: 500;
+
+    margin-right:8px;
+}
+h2{
+    align-self:center;
+
+    color: #BF3333;
+    text-align: center;
+    font-size: 12px;
     font-style: normal;
     font-weight: 500;
 
