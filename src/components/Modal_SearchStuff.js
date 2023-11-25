@@ -59,8 +59,8 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
                 // 배포된 사이트에선 인식이 안 됨. 무지성 useState useEffect는 문제가 발생할 수도 있나봄
                     for(let i=0;i<totalLength;i++)
                         numList.push(i+1);
+                    console.log('numList set!',numList);
                 }
-                console.log('numList set!',numList);
                 setFetched(true);
             }
         } catch (error) {
