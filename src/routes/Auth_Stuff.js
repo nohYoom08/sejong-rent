@@ -173,9 +173,9 @@ function Auth_Stuff() {
             itemName:itemInfo.itemName,
             total:itemInfo.total,
             cnt:itemInfo.cnt,
-            image:imageUrlUpload2
-        }))
-    },[itemInfo,imageUrlUpload2])
+            image:itemInfo.image
+            }))
+    },[itemInfo])
     useEffect(()=>{console.log(
         'formValue check!',formValues)},[formValues]);
     return <Wrapper>
