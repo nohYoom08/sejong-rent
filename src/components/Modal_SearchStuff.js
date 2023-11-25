@@ -51,7 +51,15 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
             if (response.data) {
                 console.log('fetch success!:', response.data);
                 setStuffList(response.data.items);
-                setTotalPages(response.data.pageInfo.totalPages);
+                if(response.data.pageInfo.totalPages){
+                const totalLength = response.data.pageInfo.totalPages;
+                setTotalPages(totalLength);
+                if(numList.length<totalLength)          
+                // useEffect 통해서 아래 루프문 실행하려고 했는데 로컬에선 잘 되던게
+                // 배포된 사이트에선 인식이 안 됨. 무지성 useState useEffect는 문제가 발생할 수도 있나봄
+                    for(let i=0;i<totalLength;i++)
+                        numList.push(i+1);
+                }
                 console.log('numList set!',numList);
                 setFetched(true);
             }
@@ -79,12 +87,6 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
     //JS에서 중간에 오류나면 useEffect 최초 실행도 못하고 닫힐 수 있음
     //useEffect는 무조건 한 번 실행되는게 맞다
     useEffect(()=>{fetchData()},[currentNum])
-    useEffect(()=>{
-        if(numList.length<totalPages)
-        for(let i=0;i<totalPages;i++){
-            numList.push(i+1);
-        }
-    },[totalPages])
 
     return <SearchModal>
         <Btn_X src={close} onClick={onClick_close}></Btn_X>
@@ -108,7 +110,7 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
         <Line></Line>
         <FlexBox_Row style={{ marginBottom: '8px' }}>
             {numList.map((item, key) => {
-                if (Number(item) == Number(currentNum)) {
+                if (Number(item) === Number(currentNum)) {
                     return <PageNum_Selected key={key}
                         value={item}>{item}
                     </PageNum_Selected>
