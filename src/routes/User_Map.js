@@ -23,7 +23,7 @@ function User_Map() {
         <BannerBox></BannerBox>
             <MainBox>
                 <SecondBox>
-                    <Link to='/Sejong_Rent' style={{ textDecoration: 'none' }}>
+                    <Link to='/' style={{ textDecoration: 'none' }}>
                         <BackPage>
                             <Icon src={backpage}></Icon>
                             이전 페이지

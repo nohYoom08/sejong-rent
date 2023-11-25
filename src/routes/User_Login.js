@@ -46,7 +46,7 @@ function User_Login() {
         <Sejong></Sejong>
         <BannerBox></BannerBox>
         <MainBox>
-            <Link to='/Sejong_Rent' style={{
+            <Link to='/' style={{
                 textDecoration: 'none',
                 alignSelf: 'flex-start',
                 marginLeft: '-12px'

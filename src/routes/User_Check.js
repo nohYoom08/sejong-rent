@@ -136,7 +136,7 @@ function User_Check() {
         <BannerBox></BannerBox>
         <MainBox>
             <SecondBox>
-                <Link to='/Sejong_Rent' style={{
+                <Link to='/' style={{
                     textDecoration: 'none',
                     alignSelf: 'flex-start'
                 }}>

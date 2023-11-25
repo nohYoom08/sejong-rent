@@ -26,7 +26,7 @@ function Auth_Home() {
 
     const onClick_logout=()=>{
         sessionStorage.clear();
-        navigate('/Sejong_Rent');
+        navigate('/');
     }
     return <Wrapper>
         <Sejong></Sejong>
