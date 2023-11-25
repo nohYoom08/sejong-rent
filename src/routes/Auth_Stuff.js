@@ -498,7 +498,7 @@ const Img_Stuff_None = styled.div`
 `;
 
 const SearchBar = styled.div`
-width: 136px;
+width: 120px;
 height: 32px;
 flex-shrink: 0;
 
@@ -535,7 +535,7 @@ align-items:center;
 const AddBtn = styled.button`
 align-self: flex-end;
 
-width: 54px;
+width: 60px;
 height: 25px;
 flex-shrink: 0;
 
