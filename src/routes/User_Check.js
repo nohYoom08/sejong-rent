@@ -75,7 +75,6 @@ function User_Check() {
             if(response.data){
                 console.log('delete success!',response.data);
                 alert("삭제를 성공적으로 완료했습니다!")
-                onClick_searched();
             }else{
                 console.log('delete fail')
             }
@@ -90,7 +89,7 @@ function User_Check() {
         const REVISEURL = `http://27.96.131.106:8080/rental/${rentalId}`;
 
         const result1 = window.prompt("원하는 대여 수량을 작성해주십시오");
-        if(result1<=(cnt+limitCnt)){
+        if(result1<=(cnt+limitCnt) && result1){
             const result2 = window.confirm("대여 수량을 변경하시겠습니까?");
             if(result2){
                 const name = formValues.name;
@@ -113,7 +112,7 @@ function User_Check() {
                     console.log('revise failed',error);
                 }
             }
-        }else{
+        }else if(result1){
             alert("요청하시려는 수량이 잔여수량보다 많습니다!");
         }
     }
