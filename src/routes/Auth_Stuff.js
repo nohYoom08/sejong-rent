@@ -554,7 +554,7 @@ line-height: 18px; /* 150% */
 
 const ResetBtn = styled.button`
 
-width: 72px;
+width: 80px;
 height: 25px;
 flex-shrink: 0;
 

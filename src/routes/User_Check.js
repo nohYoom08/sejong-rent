@@ -394,7 +394,7 @@ border:none;
 `;
 
 const SearchBtn = styled.button`
-width: 40px;
+width: 48px;
 height: 24px;
 flex-shrink: 0;
 

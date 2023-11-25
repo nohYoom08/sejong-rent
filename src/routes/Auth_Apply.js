@@ -43,7 +43,7 @@ function Apply() {
 
     const fetchDataList = async () => {
         setFetched(false);
-        
+
         try {
             const response = await axios.get(FETCHURL);
             console.log('response',response);
@@ -738,7 +738,7 @@ position:absolute;
 top:28px;
 right:24px;
 
-width: 48px;
+width: 56px;
 height: 20px;
 flex-shrink: 0;
 
