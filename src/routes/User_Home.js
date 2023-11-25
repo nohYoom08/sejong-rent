@@ -116,7 +116,7 @@ gap:48px;
 `;
 
 const BtnBig = styled.button`
-width: 240px;
+width: 248px;
 height: 64px;
 flex-shrink: 0;
 border-radius: 20px;
@@ -143,7 +143,7 @@ cursor:pointer;
 p{
 margin:0;
 padding:0;
-width: 179px;
+width: 188px;
 height: 26px;
 
 
