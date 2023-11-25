@@ -41,6 +41,7 @@ function User_Check() {
         const studentNo = formValues.studentNo;
         const password=formValues.password;
 
+        setIsSearched(false);
         try{
             console.log('will be axios-studentNo,password:',studentNo,password);
             const response = await axios.post(SEARCHURL,
@@ -84,13 +85,12 @@ function User_Check() {
     }
     }
 
-    const onClick_revise = async(event)=>{  //뺄지 말지 고민
-        event.preventDefault();
-        const rentalId = event.target.value;
+    const onClick_revise = async(rentalId,cnt,limitCnt)=>{  //뺄지 말지 고민
+
         const REVISEURL = `http://27.96.131.106:8080/rental/${rentalId}`;
 
         const result1 = window.prompt("원하는 대여 수량을 작성해주십시오");
-        if(result1){
+        if(result1<=(cnt+limitCnt)){
             const result2 = window.confirm("대여 수량을 변경하시겠습니까?");
             if(result2){
                 const name = formValues.name;
@@ -113,7 +113,14 @@ function User_Check() {
                     console.log('revise failed',error);
                 }
             }
+        }else{
+            alert("요청하시려는 수량이 잔여수량보다 많습니다!");
         }
+    }
+
+    const onClick_impossible = () => {
+        alert(`대여품을 수납하거나 반납하신 이후에는 신청내역 수정 및 취소를 하실 수 없습니다.
+* 반납 이후 내역삭제는 학생회에서 처리합니다 *`)
     }
 
     useEffect(()=>{
@@ -165,6 +172,7 @@ function User_Check() {
                                 <th>품명</th>
                                 <th>이미지</th>
                                 <th>대여<br></br>수량</th>
+                                <th>잔여<br></br>수량</th>
                                 <th>상태</th>
                                 <th>비고</th>
                             </tr>
@@ -175,20 +183,43 @@ function User_Check() {
                                     <td>{item.itemName}</td>
                                     <td><img src={item.url}/></td>
                                     <td>{item.cnt}</td>
-                                    <td>{item.status}</td>
+                                    {/* 대여수량 */}
+                                    <td>{item.limitCnt}</td>
+                                    {/* 잔여수량 */}
+                                    {item.status==="WAIT" && <td>신청<br></br>대기</td>}
+                                    {item.status==="RENTAL" && <td>대여중</td>}
+                                    {item.status==="RETURN" && <td>반납<br></br>완료</td>}
                                     <td>
-                                    <Btn_Rent 
+                                    {
+                                    item.status==="WAIT" && <Btn_Rent 
                                     value={item.rentalId}
                                     onClick={onClick_cancle}
                                     bgColor='#D7556C'>
                                         대여신청<br></br>취소하기
                                     </Btn_Rent>
-                                    <Btn_Rent 
+                                    }
+                                    {
+                                    item.status==="WAIT" && <Btn_Rent 
                                     value={item.rentalId}
-                                    onClick={onClick_revise}
+                                    onClick={()=>{
+                                        onClick_revise(
+                                            item.rentalId,
+                                            item.cnt,
+                                            item.limitCnt)}}
                                     bgColor='#333394'>
                                         대여수량<br></br>수정하기
                                     </Btn_Rent>
+                                    }
+                                    {
+                                    (item.status==="RENTAL" ||
+                                    item.status==="RETURN") &&
+                                    <Btn_Rent 
+                                    value={item.rentalId}
+                                    onClick={onClick_impossible}
+                                    bgColor='rgb(150,150,150)'>
+                                        대여수정/<br></br>취소불가
+                                    </Btn_Rent>
+                                    }
                                     </td>
                                 </tr>
                             ))}
@@ -405,12 +436,14 @@ margin-bottom:12px;
 
 
 const TableBox = styled.div`
+width:100%;
 height:360px;
 overflow:auto;
 margin-bottom:16px;
 `;
 //테이블 스타일 적용
 const Table = styled.table`
+width:100%;
 
 color: #000;
 text-align:center;
@@ -432,25 +465,22 @@ thead{
         line-height: 18px; /* 128.571% */
     }
     th:first-child{
-        width:80px;
+        width:20%;
     }
     th:nth-child(2){
-        width:100px;
+        width:30%;
     }
     th:nth-child(3){
-        width:40px;
+        width:10%;
     }
     th:nth-child(4){
-        width:100px;
+        width:10%;
     }
     th:nth-child(5){
-        width:100px;
+        width:10%;
     }
     th:nth-child(6){
-        width:120px;
-    }
-    th:nth-child(7){
-        width:100px;
+        width:20%;
     }
 }
 tbody{
@@ -488,7 +518,10 @@ font-weight: 400;
 
 cursor:pointer;
 `;
-
+const ImpossibleText = styled.p`
+color:rgb(100,100,100);
+cursor:pointer;
+`;
 
 
 //MainBox 끝//

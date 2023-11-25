@@ -9,6 +9,7 @@ import Signed_In from '../components/Signed_In';
 import forever from '../images/forever.png';
 import backpage from '../images/🦆 icon _arrow back.svg';
 import search from '../images/🦆 icon _search.svg';
+import trash_bin from '../images/trashBin.svg';
 
 import axios from "axios";
 
@@ -41,6 +42,8 @@ function Apply() {
     ▼`)
 
     const fetchDataList = async () => {
+        setFetched(false);
+        
         try {
             const response = await axios.get(FETCHURL);
             console.log('response',response);
@@ -54,6 +57,11 @@ function Apply() {
         } catch (error) {
             console.log('fetch error:', error);
         }
+    }
+
+    const onClick_refresh = () => {
+        setFetched(false);
+        fetchDataList();
     }
 
     const onClick_idName = () => {
@@ -242,9 +250,9 @@ function Apply() {
                     <SearchBtn onClick={onClick_search}>검색</SearchBtn>
                 </FlexBox_Row> */}
                 {/* 검색기능 추후 추가 */}
-                <DeleteAll onClick={onClick_deleteAll}>
-                        반납완료 내역 전체삭제하기 🗑️
-                </DeleteAll>
+                <RefreshBtn
+                onClick={onClick_refresh}
+                >새로고침</RefreshBtn>
                 <Line></Line>
                <TableBox>
                {fetched ? 
@@ -320,10 +328,19 @@ function Apply() {
                             ))}
 
                         </tbody>
+
+                        
                     </Table>
                     : <BlankText>
                         대여신청내역이 없습니다!
-                </BlankText>
+                    </BlankText>
+                }
+                {
+                fetched &&
+                <DeleteAll onClick={onClick_deleteAll}>
+                        반납완료 내역 전체삭제하기
+                        <img src={trash_bin}></img>
+                </DeleteAll>
                 }
                 </TableBox>
                 
@@ -496,32 +513,6 @@ ${Icon}{
 }
 `;
 
-const DeleteAll = styled.div`
-position:absolute;
-top:20px;
-right:-4px;
-
-width:200px;
-height:30px;
-border-radius:8px;
-
-margin-top:8px;
-margin-left:8px;
-margin-bottom:16px;
-
-color: rgb(120,80,80);
-font-size: 10px;
-font-weight: 500;
-
-cursor:pointer;
-
-text-align:center;
-display: flex;
-justify-content: center;
-align-items:center;
-flex-shrink: 0;
-`;
-
 const Line = styled.div`
 align-self:center;
 
@@ -593,8 +584,9 @@ border:1px solid gray;
 border-radius:10px;
 
 display:flex;
-justify-content:center;
-align-items:flex-start;
+flex-direction:column;
+justify-content:flex-start;
+align-items:center;
 `;
 
 const BlankText = styled.p`
@@ -612,6 +604,7 @@ align-items:center;
 //테이블 스타일 적용
 const Table = styled.table`
 
+width:100%;
 color: #000;
 text-align:center;
 font-size: 12px;
@@ -620,6 +613,7 @@ font-weight: 400;
 line-height: 18px; /* 128.571% */
 border-radius:20px;
 border-collapse:collapse;   //테이블에 적용해야되는 속성(셀이 아니라)
+
 thead{
     th{
         height:40px;
@@ -632,7 +626,7 @@ thead{
         line-height: 18px; /* 128.571% */
     }
     th:first-child{
-        width:10px;
+        width:10%;
         &:hover{
             background-color:rgb(250,200,200);
         }
@@ -641,10 +635,10 @@ thead{
         }
     }
     th:nth-child(2){
-        width:10px;
+        width:10%;
     }
     th:nth-child(3){
-        width:50px;
+        width:10%;
         &:hover{
             background-color:rgb(250,200,200);
         }
@@ -653,13 +647,13 @@ thead{
         }
     }
     th:nth-child(4){
-        width:100px;
+        width:10%;
     }
     th:nth-child(5){
-        width:100px;
+        width:10%;
     }
     th:nth-child(6){
-        width:80px;
+        width:10%;
         &:hover{
             background-color:rgb(250,200,200);
         }
@@ -668,10 +662,12 @@ thead{
         }
     }
     th:nth-child(7){
-        width:10px;
+        width:10%;
+        padding:0 2px 0 2px;
     }
 }
 tbody{
+    height:60px;
     td{
         font-weight:100;
         font-size:10px;
@@ -687,6 +683,37 @@ tbody{
     }
 }
 `;
+
+const DeleteAll = styled.div`
+position:absolute;
+z-index:1;
+bottom:32px;
+width:180px;
+height:30px;
+border-radius:8px;
+
+margin-top:8px;
+margin-left:8px;
+
+background-color: rgb(180,120,120);
+color:white;
+font-size: 10px;
+font-weight: 500;
+
+cursor:pointer;
+
+text-align:center;
+display: flex;
+justify-content: center;
+align-items:center;
+flex-shrink: 0;
+
+img{
+    width:16px;
+    height:20px;
+}
+`;
+
 const Btn_Rent = styled.button`
 width: 60px;
 height: 32px;
@@ -704,6 +731,29 @@ font-size: 12px;
 font-style: normal;
 font-weight: 400;
 line-height: 18px; /* 90% */
+`;
+
+const RefreshBtn = styled.button`
+position:absolute;
+top:28px;
+right:24px;
+
+width: 48px;
+height: 20px;
+flex-shrink: 0;
+
+border-radius: 10px;
+background: rgb(235,150,150);
+border:none;
+cursor:pointer;
+margin-right:4px;
+
+color: #FFF;
+text-align: center;
+font-size: 10px;
+font-style: normal;
+font-weight: 400;
+line-height: 18px; /* 150% */
 `;
 //MainBox 끝//
 //MainBox 끝//
