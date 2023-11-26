@@ -152,6 +152,7 @@ function Auth_Stuff() {
                     console.log('delete success!',response.data);
                     alert("해당 품목은 삭제되었습니다");
                     navigate('/auth_stuff');
+                    setIsSelected(false);
                 }else{
                     console.log('delete failed');
                 }

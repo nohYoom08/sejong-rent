@@ -91,13 +91,15 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
     fetchData();
 
     if(numList.length < totalPages){
-        setNumList(Array.from({length: totalPages}, (v, i) => i + 1));
-        //단순 숫자배열 만들기
+        setNumList(Array.from({length: totalPages}, (value, index) => index + 1));
+        //단순 숫자배열 만들기 (value는 그냥 매개로 넣은 값. 실제로 쓰이진 않지만 자리는 차지해야함)
+        //로컬에서는 const에 push만 해도 렌더링이 될진 모르나 실제 사이트 배포시에는 실행이 안 되니 주의.
+        //무조건 set으로 관리한다
         console.log('numList success!:',
-        Array.from({length: 10}, (v, i) => i + 1));
+        Array.from({length: 10}, (value, index) => index + 1));
     }
-
    },[currentNum, totalPages])
+
 
     return <SearchModal>
         <Btn_X src={close} onClick={onClick_close}></Btn_X>
