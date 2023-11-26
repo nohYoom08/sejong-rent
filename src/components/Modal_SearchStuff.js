@@ -237,6 +237,9 @@ align-items:center;
 &:hover{
     border:2px solid rgb(256,180,180);
 }
+&:active{
+    box-shadow:inset 0px 4px 4px 0px rgba(0,0,0,0.25);
+}
 input{
     width: 18px;
 height: 20px;

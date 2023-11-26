@@ -54,10 +54,8 @@ function Auth_Stuff() {
         setIsSelected(false);
     }
     const onClick_modalAdd = () => {
-        if(isSelected)
-            alert("검색 초기화 후 대여품 추가가 가능합니다")
-        else
-            setIsOpenAdd(true);
+        setIsSelected(false);
+        setIsOpenAdd(true);
     }
     const onChange = async(event) =>{
         event.preventDefault();
