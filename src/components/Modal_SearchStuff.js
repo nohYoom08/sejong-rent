@@ -8,18 +8,18 @@ import axios from 'axios';
 
 
 function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
-   
+
     const STUFFURL = 'http://27.96.131.106:8080/items';
 
     const [stuffList, setStuffList] = useState([]);
-    const [totalPages,setTotalPages]=useState(0);
+    const [totalPages, setTotalPages] = useState(0);
     const [numList, setNumList] = useState([]);
     const [currentNum, setCurrentNum] = useState(1);
     const [fetched, setFetched] = useState(false);
 
 
 
-        //page나누는 아주 좋은 slice 활용
+    //page나누는 아주 좋은 slice 활용
     /*const [entirePages, setEntirePages] = useState(0);
     얘도 만들지마 set은 항상 늦는다고 생각*/
 
@@ -42,24 +42,27 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
 
 
     const fetchData = async () => {
-        const page = currentNum-1;  //백에선 page가 0부터 시작하므로
+        const page = currentNum - 1;  //백에선 page가 0부터 시작하므로
         const size = 10;
-        console.log('page,size:',page,size);
+        console.log('page,size:', page, size);
         try {
             const response = await axios.get(STUFFURL,
                 { params: { page, size } });
             if (response.data) {
                 console.log('fetch success!:', response.data);
                 setStuffList(response.data.items);
-                if(response.data.pageInfo.totalPages){
-                const totalLength = response.data.pageInfo.totalPages;
-                setTotalPages(totalLength);
-                if(numList.length<totalLength)          
-                // useEffect 통해서 아래 루프문 실행하려고 했는데 로컬에선 잘 되던게
-                // 배포된 사이트에선 인식이 안 됨. 무지성 useState useEffect는 문제가 발생할 수도 있나봄
-                    for(let i=0;i<totalLength;i++)
-                        numList.push(i+1);
-                    console.log('numList set!',numList);
+                if (response.data.pageInfo.totalPages) {
+                    setTotalPages(response.data.pageInfo.totalPages);
+                    // if (numList.length < totalLength){
+                    //     // useEffect 통해서 아래 루프문 실행하려고 했는데 로컬에선 잘 되던게
+                    //     // 배포된 사이트에선 인식이 안 됨. 무지성 useState useEffect는 문제가 발생할 수도 있나봄
+                    //     for (let i = 0; i < totalLength; i++)
+                    //         numList.push(i + 1);
+                    //로컬에서는 push가 야매로 됐을지 모르겠으나 배포한 사이트는 얄짤 없다
+                    //     console.log('numList set!', numList);
+                    // }
+                    console.log('totalPages success:',
+                    response.data.pageInfo.totalPages);
                 }
                 setFetched(true);
             }
@@ -84,9 +87,17 @@ function Modal_SearchStuff({ setIsOpen, setItemId, setIsSelected }) {
     }
 
 
-    //JS에서 중간에 오류나면 useEffect 최초 실행도 못하고 닫힐 수 있음
-    //useEffect는 무조건 한 번 실행되는게 맞다
-    useEffect(()=>{fetchData()},[currentNum])
+   useEffect(() => {
+    fetchData();
+
+    if(numList.length < totalPages){
+        setNumList(Array.from({length: totalPages}, (v, i) => i + 1));
+        //단순 숫자배열 만들기
+        console.log('numList success!:',
+        Array.from({length: 10}, (v, i) => i + 1));
+    }
+
+   },[currentNum, totalPages])
 
     return <SearchModal>
         <Btn_X src={close} onClick={onClick_close}></Btn_X>
@@ -142,7 +153,7 @@ justify-content:center;
 align-items:center;
 `;
 
-const StuffBox=styled.div`
+const StuffBox = styled.div`
 width:280px;
 
 display:grid;
