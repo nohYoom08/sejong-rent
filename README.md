@@ -21,4 +21,8 @@
 <img width="200" height="350" alt="스크린샷 2023-11-25 오후 8 23 05" src="https://github.com/user-attachments/assets/533e4df8-4670-4122-b3d9-e52048b1b1b6">
 
 ## 실행 환경
-AWS를 통한 사이트 배포가 이루어졌으나 현재는 중단되었으며, Create-React-App를 통한 ReactJS 로컬 환경에서 실행해볼 수 있다.
+* AWS를 통한 사이트 배포가 이루어졌으나 현재는 중단
+* Create-React-App를 통한 ReactJS 로컬 환경에서 실행가능
+
+### 관련 패키지 (npm)
+package.json 참고
