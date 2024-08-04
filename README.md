@@ -23,6 +23,19 @@
 ## 실행 환경
 * AWS를 통한 사이트 배포가 이루어졌으나 현재는 중단
 * Create-React-App를 통한 ReactJS 로컬 환경에서 실행가능
-
-### 관련 패키지 (npm)
-package.json 참고
+* 관련 패키지(npm) => package.json 참고<br><br>
+  ```
+    "dependencies":
+  {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.18.0",
+    "react-scripts": "5.0.1",
+    "styled-components": "^6.1.1",
+    "web-vitals": "^2.1.4"
+  },
+  ```
